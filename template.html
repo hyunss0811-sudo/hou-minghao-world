@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>후밍하오(Hou Minghao) 3D 가상 팬 라운지 - 키위 채원님 헌정</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root {
+      --primary: #c084fc;
+      --accent: #38bdf8;
+      --gold: #fbbf24;
+      --bg: #03020a;
+      --card-bg: rgba(15, 12, 30, 0.88);
+      --glass-border: rgba(192, 132, 252, 0.28);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: #f8fafc;
+      font-family: "Pretendard", -apple-system, sans-serif;
+    }
+    #canvas-container {
+      position: absolute; inset: 0; z-index: 1; touch-action: none;
+    }
+
+    /* Top HUD */
+    .top-hud {
+      position: fixed; top: max(12px, env(safe-area-inset-top)); left: 14px; right: 14px;
+      z-index: 10; display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none;
+    }
+    .top-hud * { pointer-events: auto; }
+    .brand-title {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .brand-title h1 {
+      font-size: 13px; font-weight: 800; color: #f3e8ff; display: flex; align-items: center; gap: 6px;
+    }
+    .brand-title small {
+      font-size: 10px; color: #c084fc; display: block; margin-top: 1px;
+    }
+    .hud-controls { display: flex; gap: 8px; }
+    .icon-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    /* Bottom Action Bar */
+    .bottom-hud {
+      position: fixed; bottom: max(16px, env(safe-area-inset-bottom)); left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex; gap: 8px;
+      padding: 6px 10px;
+      background: rgba(10, 8, 22, 0.85);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      border-radius: 999px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      max-width: calc(100vw - 28px);
+      overflow-x: auto;
+    }
+    .action-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #e2e8f0;
+      padding: 9px 14px;
+      font-size: 12px; font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 5px;
+      transition: all 0.2s;
+    }
+    .action-btn.active, .action-btn:active {
+      background: rgba(192, 132, 252, 0.25);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .action-btn.highlight {
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Modal Sheets */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(2, 2, 8, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none; align-items: flex-end; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { display: flex; opacity: 1; }
+    .modal-sheet {
+      width: 100%; max-width: 520px;
+      max-height: 82vh;
+      background: #0f0b1e;
+      border: 1px solid var(--glass-border);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 18px max(24px, env(safe-area-inset-bottom));
+      display: flex; flex-direction: column;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+      overflow: hidden;
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .sheet-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sheet-header h2 { font-size: 16px; font-weight: 800; color: #f3e8ff; display: flex; align-items: center; gap: 6px; }
+    .close-btn {
+      background: rgba(255,255,255,0.1); border: none; color: #fff;
+      width: 28px; height: 28px; border-radius: 50%;
+      cursor: pointer; font-size: 14px;
+    }
+    .sheet-body {
+      overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;
+    }
+
+    /* Gallery Tabs & Grid */
+    .cat-tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+    .cat-tab {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: #cbd5e1; font-size: 11px; font-weight: 600;
+      padding: 6px 12px; border-radius: 14px; cursor: pointer; white-space: nowrap;
+    }
+    .cat-tab.active { background: var(--primary); color: #1e113a; font-weight: 800; border-color: var(--primary); }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .photo-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; overflow: hidden;
+      cursor: pointer; transition: transform 0.15s;
+    }
+    .photo-card:active { transform: scale(0.97); }
+    .photo-thumb {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+      background: #1e1b2e;
+    }
+    .photo-info { padding: 8px 10px; }
+    .photo-info h4 { font-size: 12px; font-weight: 700; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .photo-info p { font-size: 10px; color: #94a3b8; margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Lightbox Modal */
+    #lightbox-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.92);
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 20px;
+    }
+    #lightbox-overlay.open { display: flex; }
+    #lightbox-img {
+      max-width: 100%; max-height: 70vh;
+      border-radius: 12px; object-fit: contain;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+    }
+    #lightbox-desc {
+      margin-top: 14px; text-align: center; max-width: 480px;
+    }
+    #lightbox-desc h3 { font-size: 15px; font-weight: 800; color: #f3e8ff; margin-bottom: 4px; }
+    #lightbox-desc p { font-size: 12px; color: #cbd5e1; line-height: 1.4; }
+
+    /* Lantern Input Form */
+    .wish-form { display: flex; flex-direction: column; gap: 12px; }
+    .wish-input {
+      width: 100%; height: 90px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      border-radius: 14px; padding: 12px;
+      color: #fff; font-family: inherit; font-size: 14px;
+      resize: none; outline: none;
+    }
+    .wish-submit {
+      background: linear-gradient(135deg, #f43f5e, #a855f7);
+      border: none; color: #fff; font-weight: 800; font-size: 14px;
+      padding: 12px; border-radius: 14px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
+    }
+
+    /* Video Embed Card */
+    .video-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 14px; margin-bottom: 12px;
+    }
+    .video-card h3 { font-size: 13px; font-weight: 800; color: #f3e8ff; margin-bottom: 6px; }
+    .video-card p { font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4; }
+    .video-link-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #e11d48; color: #fff; text-decoration: none;
+      padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
+    }
+    .video-link-btn.threads { background: #111; border: 1px solid #333; }
+
+    /* Tip Toast */
+    .toast {
+      position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+      background: rgba(18, 14, 38, 0.9);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      color: #e9d5ff; font-size: 12px; font-weight: 600;
+      padding: 8px 16px; border-radius: 20px;
+      backdrop-filter: blur(12px);
+      z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Top HUD -->
+  <div class="top-hud">
+    <div class="brand-title">
+      <h1>💜 후밍하오 가상 팬 라운지</h1>
+      <small>🌙 《대몽귀리》 달빛 연화지 · 키위 채원님 헌정</small>
+    </div>
+    <div class="hud-controls">
+      <button class="icon-btn" id="btn-sound" title="소리 켜기/끄기">🔇</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">화면을 드래그해 360도로 둘러보세요 ✨</div>
+
+  <!-- Bottom HUD Actions -->
+  <div class="bottom-hud">
+    <button class="action-btn highlight" id="btn-lantern">🪷 소원 연꽃등</button>
+    <button class="action-btn" id="btn-gallery">🖼️ 밍이 갤러리</button>
+    <button class="action-btn" id="btn-dance">💃 소시구 군무</button>
+    <button class="action-btn" id="btn-birthday">🎂 0803 생일</button>
+  </div>
+
+  <!-- Modal: Lantern Wish -->
+  <div class="modal-overlay" id="modal-lantern">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h2>🪷 연화지 소원 연꽃등 띄우기</h2>
+        <button class="close-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div class="sheet-body">
+        <p style="font-size: 12px; color: #c084fc; margin-bottom: 12px; line-height: 1.5;">
+          대몽귀리 달빛 호수에 밍이에게 전하고 싶은 마음이나 소원을 적어보세요.<br>
+          불을 밝힌 은은한 연꽃등이 달빛 호수 너머로 떠내려갑니다.
+        </p>
+        <div class="wish-form">
+          <textarea class="wish-input" id="wish-text" placeholder="예) 명호야 항상 빛나는 너를 응원해! 대몽귀리 최고야 🪷"></textarea>
+          <button class="wish-submit" id="btn-send-lantern">호수에 연꽃등 띄우기 ✨</button>
+        </div>
+        <div id="wishes-list" style="margin-top: 18px;">
+          <h4 style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">내가 띄운 연꽃등</h4>
+          <div id="wishes-container" style="display: flex; flex-direction: column; gap: 6px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Full Gallery -->
+  <div class="modal-overlay" id="modal-gallery">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h2>🖼️ 후밍하오 명장면 갤러리</h2>
+        <button class="close-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div class="cat-tabs" id="cat-tabs">
+        <button class="cat-tab active" data-cat="all">전체 (25)</button>
+        <button class="cat-tab" data-cat="da_meng_gui_li">🌙 대몽귀리</button>
+        <button class="cat-tab" data-cat="rooftop">🌃 루프탑/Galaxy</button>
+        <button class="cat-tab" data-cat="ru_qing_yun">☁️ 입청운</button>
+        <button class="cat-tab" data-cat="fox_spirit">🦊 호요소홍랑</button>
+      </div>
+      <div class="sheet-body">
+        <div class="gallery-grid" id="gallery-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Dance & Singalong -->
+  <div class="modal-overlay" id="modal-dance">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h2>💃 단체 군무 & Galaxy 떼창</h2>
+        <button class="close-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="video-card">
+          <h3>🪷 대몽귀리 주역 배우 단체 칼군무 ('소시구 A반')</h3>
+          <p>후명호, 좌엽, 성소, 뢰위명, 옌안 주역 완전체가 함께 춘 레전드 댄스 챌린지 원본 영상입니다.</p>
+          <a class="video-link-btn threads" href="https://www.threads.com/share/BAbFOZUIVB/" target="_blank" rel="noopener">🎬 스레드 군무 챌린지 보기</a>
+        </div>
+        <div class="video-card">
+          <h3>🌌 신곡 〈Galaxy Far Far Away〉 은하수 떼창</h3>
+          <p>10월 15일 발매 신곡! 키위 팬들에게 떼창 숙제로 내준 은하수 라이브 영상 모음입니다.</p>
+          <a class="video-link-btn" href="https://youtu.be/H7XPlifZA8Y" target="_blank" rel="noopener">▶️ 유튜브 라이브 떼창 듣기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Birthday -->
+  <div class="modal-overlay" id="modal-birthday">
+    <div class="modal-sheet">
+      <div class="sheet-header">
+        <h2>🎂 0803 명호 생일 소원 라운지</h2>
+        <button class="close-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div class="sheet-body" style="text-align: center;">
+        <img id="bday-img" style="width: 100%; border-radius: 14px; margin-bottom: 12px;" />
+        <h3 style="font-size: 14px; color: #fbbf24; margin-bottom: 6px;">"채원님의 가장 아끼는 최애 컷"</h3>
+        <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+          바이크 피규어가 얹어진 별빛 케이크와 촛불 앞에서 두 손 모아 간절히 소원을 비는 명호의 순수하고 따뜻한 순간이 가상 라운지의 영원한 불빛으로 타오릅니다.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox-overlay" onclick="closeLightbox(event)">
+    <img id="lightbox-img" src="" alt="확대보기" />
+    <div id="lightbox-desc">
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <!-- Data & Three.js App -->
+  <script>
+    const GALLERY = __GALLERY_JSON__;
+
+    // --- Web Audio Synthesizer (Ambient Water & Flute Chime) ---
+    let audioCtx = null;
+    let isMuted = true;
+    let ambientGain = null;
+
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      ambientGain = audioCtx.createGain();
+      ambientGain.gain.value = 0;
+      ambientGain.connect(audioCtx.destination);
+
+      const bufferSize = audioCtx.sampleRate * 2;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * 0.15;
+      }
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      whiteNoise.loop = true;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 420;
+
+      whiteNoise.connect(filter).connect(ambientGain);
+      whiteNoise.start();
+    }
+
+    function toggleSound() {
+      initAudio();
+      isMuted = !isMuted;
+      document.getElementById("btn-sound").innerText = isMuted ? "🔇" : "🔊";
+      if (audioCtx) {
+        audioCtx.resume();
+        ambientGain.gain.setTargetAtTime(isMuted ? 0 : 0.35, audioCtx.currentTime, 0.2);
+      }
+    }
+    document.getElementById("btn-sound").onclick = toggleSound;
+
+    function playChime() {
+      if (!audioCtx || isMuted) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.6);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.2);
+    }
+
+    // --- Modal Management ---
+    function closeModals() {
+      document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("open"));
+    }
+    function openModal(id) {
+      closeModals();
+      document.getElementById(id).classList.add("open");
+    }
+
+    document.getElementById("btn-lantern").onclick = () => openModal("modal-lantern");
+    document.getElementById("btn-gallery").onclick = () => openModal("modal-gallery");
+    document.getElementById("btn-dance").onclick = () => openModal("modal-dance");
+    document.getElementById("btn-birthday").onclick = () => {
+      const bday = GALLERY.find(g => g.id.includes("birthday"));
+      if (bday) document.getElementById("bday-img").src = bday.img;
+      openModal("modal-birthday");
+    };
+
+    // --- Lightbox ---
+    function openLightbox(photo) {
+      document.getElementById("lightbox-img").src = photo.img;
+      document.getElementById("lightbox-title").innerText = photo.title;
+      document.getElementById("lightbox-caption").innerText = photo.desc;
+      document.getElementById("lightbox-overlay").classList.add("open");
+    }
+    function closeLightbox(e) {
+      if (e.target.id === "lightbox-overlay" || e.target.id === "lightbox-img") {
+        document.getElementById("lightbox-overlay").classList.remove("open");
+      }
+    }
+
+    // --- Render Gallery Grid ---
+    let activeCat = "all";
+    function renderGallery() {
+      const cont = document.getElementById("gallery-container");
+      cont.innerHTML = "";
+      const filtered = activeCat === "all" ? GALLERY : GALLERY.filter(g => g.category === activeCat);
+      filtered.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "photo-card";
+        card.innerHTML = `<img class="photo-thumb" src="${p.img}" alt="${p.title}" /><div class="photo-info"><h4>${p.title}</h4><p>${p.desc}</p></div>`;
+        card.onclick = () => openLightbox(p);
+        cont.appendChild(card);
+      });
+    }
+    renderGallery();
+
+    document.querySelectorAll(".cat-tab").forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        activeCat = tab.dataset.cat;
+        renderGallery();
+      };
+    });
+
+    // --- Lantern Wish Action ---
+    const userWishes = [];
+    document.getElementById("btn-send-lantern").onclick = () => {
+      const txt = document.getElementById("wish-text").value.trim();
+      if (!txt) return;
+      userWishes.push(txt);
+      document.getElementById("wish-text").value = "";
+      spawn3DLantern(txt);
+      playChime();
+      renderWishes();
+      closeModals();
+      showToast("🪷 소원 연꽃등이 달빛 호수에 떠올랐습니다 ✨");
+    };
+
+    function renderWishes() {
+      const cont = document.getElementById("wishes-container");
+      cont.innerHTML = userWishes.map(w => `<div style="background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:10px; font-size:11px; color:#e2e8f0;">🪷 "${w}"</div>`).join("");
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 3500);
+    }
+    setTimeout(() => showToast("화면을 터치해 드래그하면 360도로 둘러볼 수 있어요! 🌙"), 1200);
+
+    // --- Three.js 3D Xianxia Moonlight Water Pavilion ---
+    const container = document.getElementById("canvas-container");
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x060416, 0.016);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 7, 24);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    container.appendChild(renderer.domElement);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0x7c3aed, 0.9);
+    scene.add(ambient);
+
+    const moonLight = new THREE.DirectionalLight(0xe0f2fe, 1.8);
+    moonLight.position.set(-15, 30, -30);
+    scene.add(moonLight);
+
+    const centerPointLight = new THREE.PointLight(0xf43f5e, 2.2, 35);
+    centerPointLight.position.set(0, 3, 0);
+    scene.add(centerPointLight);
+
+    // Sky Stars
+    const starCount = 600;
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starPos[i] = (Math.random() - 0.5) * 200;
+      starPos[i+1] = Math.random() * 80 + 10;
+      starPos[i+2] = (Math.random() - 0.5) * 200;
+    }
+    starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.8, transparent: true, opacity: 0.8 });
+    scene.add(new THREE.Points(starGeo, starMat));
+
+    // Giant Glowing Moon
+    const moonGeo = new THREE.SphereGeometry(14, 32, 32);
+    const moonMat = new THREE.MeshBasicMaterial({ color: 0xfef9c3 });
+    const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+    moonMesh.position.set(-20, 35, -70);
+    scene.add(moonMesh);
+
+    // Water Lake Surface
+    const waterGeo = new THREE.CircleGeometry(80, 64);
+    const waterMat = new THREE.MeshStandardMaterial({
+      color: 0x071b30,
+      roughness: 0.15,
+      metalness: 0.85,
+      emissive: 0x021b3a,
+      emissiveIntensity: 0.25
+    });
+    const water = new THREE.Mesh(waterGeo, waterMat);
+    water.rotation.x = -Math.PI / 2;
+    scene.add(water);
+
+    // Water Ripple Animation Grid
+    const rippleGeo = new THREE.RingGeometry(0.1, 75, 48, 8);
+    const rippleMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.08
+    });
+    const rippleMesh = new THREE.Mesh(rippleGeo, rippleMat);
+    rippleMesh.rotation.x = -Math.PI / 2;
+    rippleMesh.position.y = 0.02;
+    scene.add(rippleMesh);
+
+    // Central Stone Lotus Stage
+    const stageGeo = new THREE.CylinderGeometry(9, 9.6, 0.8, 32);
+    const stageMat = new THREE.MeshStandardMaterial({
+      color: 0x1e1b2e,
+      roughness: 0.3,
+      metalness: 0.4,
+      emissive: 0x38bdf8,
+      emissiveIntensity: 0.12
+    });
+    const stage = new THREE.Mesh(stageGeo, stageMat);
+    stage.position.y = 0.4;
+    scene.add(stage);
+
+    // Floating 3D Curved Photo Panels
+    const panelsGroup = new THREE.Group();
+    scene.add(panelsGroup);
+
+    const textureLoader = new THREE.TextureLoader();
+    const panelCount = Math.min(6, GALLERY.length);
+    const radius = 6.8;
+
+    for (let i = 0; i < panelCount; i++) {
+      const pData = GALLERY[i];
+      const tex = textureLoader.load(pData.img);
+      tex.colorSpace = THREE.SRGBColorSpace;
+
+      const pGeo = new THREE.PlaneGeometry(3.2, 4.4);
+      const pMat = new THREE.MeshStandardMaterial({
+        map: tex,
+        side: THREE.DoubleSide,
+        roughness: 0.2,
+        metalness: 0.1,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.1
+      });
+      const pMesh = new THREE.Mesh(pGeo, pMat);
+
+      const angle = (i / panelCount) * Math.PI * 2;
+      pMesh.position.set(Math.sin(angle) * radius, 3.2, Math.cos(angle) * radius);
+      pMesh.lookAt(0, 3.2, 0);
+      pMesh.userData = pData;
+
+      const frameGeo = new THREE.BoxGeometry(3.35, 4.55, 0.08);
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: 0xa855f7,
+        emissive: 0xc084fc,
+        emissiveIntensity: 0.4
+      });
+      const frame = new THREE.Mesh(frameGeo, frameMat);
+      frame.position.z = -0.05;
+      pMesh.add(frame);
+
+      panelsGroup.add(pMesh);
+    }
+
+    // Center Mascot: Cute Green Kiwi with Star Lightstick
+    const mascotGroup = new THREE.Group();
+    mascotGroup.position.set(0, 1.2, 0);
+
+    const kiwiGeo = new THREE.SphereGeometry(1.0, 24, 24);
+    const kiwiMat = new THREE.MeshStandardMaterial({
+      color: 0x22c55e,
+      roughness: 0.3,
+      metalness: 0.2,
+      emissive: 0x16a34a,
+      emissiveIntensity: 0.2
+    });
+    const kiwiMesh = new THREE.Mesh(kiwiGeo, kiwiMat);
+    kiwiMesh.position.y = 0.5;
+    mascotGroup.add(kiwiMesh);
+
+    // Beak
+    const beakGeo = new THREE.ConeGeometry(0.2, 0.45, 12);
+    const beakMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
+    const beakMesh = new THREE.Mesh(beakGeo, beakMat);
+    beakMesh.rotation.x = Math.PI / 2;
+    beakMesh.position.set(0, 0.5, 1.05);
+    mascotGroup.add(beakMesh);
+
+    // Lightstick
+    const stickGeo = new THREE.CylinderGeometry(0.06, 0.06, 1.2, 12);
+    const stickMat = new THREE.MeshStandardMaterial({ color: 0xd8b4fe, emissive: 0xc084fc, emissiveIntensity: 0.6 });
+    const stickMesh = new THREE.Mesh(stickGeo, stickMat);
+    stickMesh.position.set(0.9, 0.8, 0.3);
+    stickMesh.rotation.z = -0.35;
+    mascotGroup.add(stickMesh);
+
+    const starGeo = new THREE.DodecahedronGeometry(0.25);
+    const starMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const starMesh = new THREE.Mesh(starGeo, starMat);
+    starMesh.position.set(1.1, 1.45, 0.3);
+    mascotGroup.add(starMesh);
+
+    scene.add(mascotGroup);
+
+    // Floating Lotus Lanterns on Water
+    const lanterns = [];
+    function createLotusMesh() {
+      const g = new THREE.Group();
+      const petalGeo = new THREE.ConeGeometry(0.5, 0.4, 6);
+      const petalMat = new THREE.MeshStandardMaterial({
+        color: 0xf43f5e,
+        emissive: 0xfb7185,
+        emissiveIntensity: 0.8
+      });
+      const petal = new THREE.Mesh(petalGeo, petalMat);
+      petal.rotation.x = Math.PI;
+      g.add(petal);
+
+      const candleGeo = new THREE.SphereGeometry(0.15, 8, 8);
+      const candleMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+      const candle = new THREE.Mesh(candleGeo, candleMat);
+      candle.position.y = 0.25;
+      g.add(candle);
+
+      return g;
+    }
+
+    for (let i = 0; i < 18; i++) {
+      const l = createLotusMesh();
+      const a = Math.random() * Math.PI * 2;
+      const r = Math.random() * 35 + 11;
+      l.position.set(Math.sin(a) * r, 0.1, Math.cos(a) * r);
+      l.userData = {
+        baseY: 0.1 + Math.random() * 0.05,
+        speed: 0.02 + Math.random() * 0.03,
+        driftA: a,
+        driftR: r
+      };
+      scene.add(l);
+      lanterns.push(l);
+    }
+
+    function spawn3DLantern(text) {
+      const l = createLotusMesh();
+      l.scale.set(1.4, 1.4, 1.4);
+      l.position.set(0, 0.2, 8.5);
+      l.userData = {
+        baseY: 0.2,
+        speed: 0.08,
+        driftA: Math.PI + (Math.random() - 0.5) * 0.4,
+        driftR: 8.5,
+        isUser: true
+      };
+      scene.add(l);
+      lanterns.push(l);
+    }
+
+    // --- Orbital Touch Controls (Smooth Damped Drag) ---
+    let isDragging = false;
+    let prevPointerX = 0;
+    let prevPointerY = 0;
+    let spherical = { radius: 24, theta: 0, phi: Math.PI / 2.8 };
+    let targetSpherical = { radius: 24, theta: 0, phi: Math.PI / 2.8 };
+
+    window.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".top-hud") || e.target.closest(".bottom-hud") || e.target.closest(".modal-sheet")) return;
+      isDragging = true;
+      prevPointerX = e.clientX;
+      prevPointerY = e.clientY;
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevPointerX;
+      const dy = e.clientY - prevPointerY;
+      prevPointerX = e.clientX;
+      prevPointerY = e.clientY;
+
+      targetSpherical.theta -= dx * 0.007;
+      targetSpherical.phi = Math.max(0.2, Math.min(Math.PI / 2.1, targetSpherical.phi + dy * 0.005));
+    });
+
+    window.addEventListener("pointerup", () => { isDragging = false; });
+    window.addEventListener("pointercancel", () => { isDragging = false; });
+
+    // Raycast on 3D Panels
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    window.addEventListener("click", (e) => {
+      if (e.target.closest(".top-hud") || e.target.closest(".bottom-hud") || e.target.closest(".modal-sheet")) return;
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(panelsGroup.children, true);
+      if (intersects.length > 0) {
+        let obj = intersects[0].object;
+        while (obj && !obj.userData.id && obj.parent) obj = obj.parent;
+        if (obj && obj.userData.id) {
+          openLightbox(obj.userData);
+        }
+      }
+    });
+
+    // Resize
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // --- Main Animation Loop ---
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      spherical.theta += (targetSpherical.theta - spherical.theta) * 0.08;
+      spherical.phi += (targetSpherical.phi - spherical.phi) * 0.08;
+      spherical.radius += (targetSpherical.radius - spherical.radius) * 0.08;
+
+      camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+      camera.position.y = spherical.radius * Math.cos(spherical.phi);
+      camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+      camera.lookAt(0, 3.2, 0);
+
+      panelsGroup.rotation.y = time * 0.06;
+
+      mascotGroup.position.y = 1.2 + Math.sin(time * 2.5) * 0.12;
+      mascotGroup.rotation.y = Math.sin(time * 1.5) * 0.2;
+
+      lanterns.forEach(l => {
+        l.position.y = l.userData.baseY + Math.sin(time * 2 + l.position.x) * 0.04;
+        l.userData.driftR += l.userData.speed * 0.02;
+        l.position.x = Math.sin(l.userData.driftA) * l.userData.driftR;
+        l.position.z = Math.cos(l.userData.driftA) * l.userData.driftR;
+      });
+
+      rippleMesh.rotation.z = time * 0.03;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
