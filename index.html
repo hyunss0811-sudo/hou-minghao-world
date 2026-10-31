@@ -81,7 +81,7 @@ var FR=[
 {t:'기백재',s:'입청운 · 가면 벗기',c1:'#ffd88a',c2:'#4a2a6b',img:'ru_qing_yun_smug_arrogant_nobleman.jpg',k:'info',d:'구름 바다 누각의 오만한 기백재. 가면을 벗는 명장면 쇼츠를 볼 수 있어요.',l:['https://youtube.com/shorts/L2kEQ7AZfx8','Mask Off 쇼츠']},
 {t:'바람개비',s:'어린 밍이',c1:'#ffe08a',c2:'#3a5a8a',img:'da_meng_gui_li_young_zhu_yan_pinwheel.jpg',k:'info',d:'보따리와 바람개비를 안은 어린 밍이의 성장 서사 컷이에요.'}
 ];
-function setImg(f,t){var m=f.mesh;m.material.map=t;m.material.needsUpdate=true;var im=t.image,a=im.width/im.height,fa=3/4.1;m.scale.set(1,1,1);if(a>fa)m.scale.y=fa/a;else m.scale.x=a/fa;}
+function setImg(f,t){var m=f.mesh;m.material.map=t;m.material.needsUpdate=true;var im=t.image,a=im.width/im.height,fa=f.fa||3/4.1;m.scale.set(1,1,1);if(a>fa)m.scale.y=fa/a;else m.scale.x=a/fa;}
 var pick=[];
 FR.forEach(function(f,i){var o=i-(FR.length-1)/2,g=new THREE.Group();
 var fm=new THREE.Mesh(new THREE.BoxGeometry(3.4,4.5,.2),new THREE.MeshBasicMaterial({color:0xffd88a}));g.add(fm);
@@ -170,9 +170,30 @@ var pn=160,pp=new Float32Array(pn*3);for(var i=0;i<pn;i++){pp[i*3]=(Math.random(
 var pgeo=new THREE.BufferGeometry();pgeo.setAttribute('position',new THREE.BufferAttribute(pp,3));var petals=new THREE.Points(pgeo,new THREE.PointsMaterial({color:0xfff0d0,size:.5,map:gW,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));zoneD.add(petals);
 var wl=new THREE.PointLight(0xffc98a,1.1,40);wl.position.set(0,7,2);zoneD.add(wl);
 var fade=document.getElementById('fade'),tt=document.getElementById('tt');
-function goZone(n){closeM();fade.style.opacity=1;setTimeout(function(){zone=n;scene.children.forEach(function(c){if(c!==zoneD&&c!==av&&!c.isLight)c.visible=(n==0);});zoneD.visible=(n==1);disco.visible=(n==0);scene.background.set(n?0x2c3f7a:0x070b1f);scene.fog.color.set(n?0x4d5f9a:0x0a1233);scene.fog.density=n?.013:.016;av.position.set(0,n?.4:.1,n?5:9);av.rotation.y=Math.PI;dest=null;av.userData.b=av.position.y;tgt.set(av.position.x,av.position.y+1.6,av.position.z);yaw=0;pitch=.3;dist=9;tt.innerHTML=n?'☁️ 입청운 · 구름 바다 누각':'🌙 달빛 비경';['bWish','bBday','bDance'].forEach(function(id){document.getElementById(id).style.display=n?'none':'';});fade.style.opacity=0;},450);}
+function goZone(n){closeM();fade.style.opacity=1;setTimeout(function(){zone=n;scene.children.forEach(function(c){if(c!==zoneD&&c!==zoneE&&c!==av&&!c.isLight)c.visible=(n==0);});zoneD.visible=(n==1);zoneE.visible=(n==2);disco.visible=(n==0);scene.background.set(n==2?0x1c0a18:n?0x2c3f7a:0x070b1f);scene.fog.color.set(n==2?0x2a1020:n?0x4d5f9a:0x0a1233);scene.fog.density=n==2?.02:n?.013:.016;av.position.set(0,n?.4:.1,n==2?6:n?5:9);av.rotation.y=Math.PI;dest=null;av.userData.b=av.position.y;tgt.set(av.position.x,av.position.y+1.6,av.position.z);yaw=0;pitch=.3;dist=9;tt.innerHTML=n==2?'🦊 호요소홍랑 · 명예의 전당':n?'☁️ 입청운 · 구름 바다 누각':'🌙 달빛 비경';['bWish','bBday','bDance'].forEach(function(id){document.getElementById(id).style.display=n?'none':'';});fade.style.opacity=0;},450);}
 function maskOff(){if(mk.off)return;mk.off=true;mk.t=0;burst(0,4,-1,0xffd88a);modal('<h3>🎭 기백재 가면 벗기</h3><p>오만한 기백재가 가면을 벗는 순간이에요.</p><a href="https://youtube.com/shorts/L2kEQ7AZfx8" target="_blank" rel="noopener">Mask Off 쇼츠</a><a href="https://youtube.com/shorts/0vUnxt6o3YQ" target="_blank" rel="noopener">배신 오열 쇼츠</a>');}
 pickD.push(maskM);
+/* 호요소홍랑 명예의 전당 */
+var zoneE=new THREE.Group();zoneE.visible=false;scene.add(zoneE);var pickE=[];
+var obs=new THREE.MeshPhongMaterial({color:0x14101a,emissive:0x0a060e,shininess:90});
+zoneE.add(new THREE.Mesh(new THREE.CylinderGeometry(8,8.4,.8,40),obs));
+var rg1=new THREE.Mesh(new THREE.TorusGeometry(8.1,.1,6,64),goldM);rg1.rotation.x=Math.PI/2;rg1.position.y=.42;zoneE.add(rg1);
+var car=new THREE.Mesh(new THREE.PlaneGeometry(2.4,15),new THREE.MeshPhongMaterial({color:0x8a1230,emissive:0x2a0510}));car.rotation.x=-Math.PI/2;car.position.set(0,.42,-.5);zoneE.add(car);
+[-4.6,4.6].forEach(function(x){var p=new THREE.Mesh(new THREE.CylinderGeometry(.35,.4,7.4,10),redM);p.position.set(x,4.1,-8.2);zoneE.add(p);});
+var bm1=new THREE.Mesh(new THREE.BoxGeometry(11,.5,.7),goldM);bm1.position.set(0,7.9,-8.2);zoneE.add(bm1);
+var bm2=new THREE.Mesh(new THREE.BoxGeometry(12.4,.4,.9),new THREE.MeshPhongMaterial({color:0x1a1018}));bm2.position.set(0,8.5,-8.2);zoneE.add(bm2);
+function mkF(f,x,y,z,ry,w,h){var g=new THREE.Group();g.add(new THREE.Mesh(new THREE.BoxGeometry(w+.4,h+.4,.2),goldM));var pm=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:card(f.t,f.s,'#7a1a3a','#1a0a2a')}));pm.position.z=.12;pm.userData.f=f;g.add(pm);var gl=sprite(gO,Math.max(w,h)*1.8,0xff9ab0);gl.position.z=-.3;g.add(gl);g.position.set(x,y,z);g.rotation.y=ry;zoneE.add(g);f.mesh=pm;pickE.push(pm);if(f.img)new THREE.TextureLoader().load(assetBase+encodeURI(f.img),function(t){setImg(f,t);},undefined,function(){});}
+mkF({t:'호요소홍랑',s:'황금 체인 군주',img:'fox_spirit_matchmaker_zhu_ye_chains_side_profile.jpg',k:'info',d:'황금 체인 머리장식과 흑색 도포를 두른 백목요군의 치명적인 옆모습이에요. 이 홀에는 인연을 잇는 붉은 실이 걸려 있어요.'},0,4.4,-7.6,0,5,6.8);
+[[{t:'백의 본체 각성',s:'흑색 마문',img:'da_meng_gui_li_zhu_yan_demon_mark_white_cloak.jpg',k:'info',d:'백의 본체로 각성한 순간의 흑색 마문 컷이에요.'},-9.5,-4.5,.6],
+[{t:'수정 베일',s:'크리스털 페이스',img:'veil_concept.jpg',k:'info',d:'크리스털 페이스 베일 화보 컷이에요.'},9.5,-4.5,-.6],
+[{t:'여우털 군주',s:'겨울 코트',img:'da_meng_gui_li_winter_fur_robe.jpg',k:'info',d:'하얀 여우털을 두른 겨울 군주 컷이에요.'},-10,1.5,1],
+[{t:'흑색 비단 도포',s:'호요소홍랑 전신',img:'fox_spirit_matchmaker_zhu_ye_full_robe.jpg',k:'info',h:5.6,fa:3/5.6,d:'흑색 비단 도포를 두른 호요소홍랑의 전신 컷이에요. 황금 체인과 함께 군주의 위엄이 느껴져요.'},10,1.5,-1]].forEach(function(d){mkF(d[0],d[1],4.4,d[2],d[3],3,d[0].h||4.1);});
+var strs=[];for(var i=0;i<36;i++){var len=3+Math.random()*6,g=new THREE.Group(),th=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,len,4),new THREE.MeshBasicMaterial({color:0xff2a4a}));th.position.y=-len/2;var bd=new THREE.Mesh(new THREE.SphereGeometry(.07,8,6),goldM);bd.position.y=-len;g.add(th,bd);g.position.set((Math.random()-.5)*28,11,-9+Math.random()*17);zoneE.add(g);strs.push(g);}
+var fires=[];for(var i=0;i<8;i++){var ff=sprite(gW,2.8,i%2?0x8a7bff:0x6fd1ff);var an=Math.random()*6.283,rr=5+Math.random()*4;ff.position.set(Math.cos(an)*rr,2+Math.random()*3,Math.sin(an)*rr-1);zoneE.add(ff);fires.push(ff);}
+var orb=new THREE.Mesh(new THREE.SphereGeometry(.38,16,12),new THREE.MeshBasicMaterial({color:0xff3a5a}));orb.position.set(0,2.2,-3.2);orb.userData.knot=1;var og=sprite(gO,3.4,0xff3a5a);orb.add(og);zoneE.add(orb);pickE.push(orb);
+function knotTap(){burst(0,3,-3.2,0xff3a5a);burst(0,3.5,-3.2,0xffd88a);pluck(784);modal('<h3>🧧 인연의 붉은 실</h3><p>붉은 실이 이어졌어요. 호요소홍랑이 키위들의 인연을 이어줄 거예요.</p>');}
+var eg=new THREE.Group(),er=new THREE.Mesh(new THREE.TorusGeometry(2.4,.16,12,48),new THREE.MeshBasicMaterial({color:0xa4cf3f})),ed=new THREE.Mesh(new THREE.CircleGeometry(2.3,32),new THREE.MeshBasicMaterial({color:0xa4cf3f,transparent:true,opacity:.25,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));ed.userData.p='back';eg.add(er,ed);eg.position.set(-12.5,3.8,8);eg.rotation.y=.9;zoneE.add(eg);pickE.push(ed);portals.push({g:eg,disc:ed});
+var wl1=new THREE.PointLight(0xff4a6a,1.3,34);wl1.position.set(0,6,2);zoneE.add(wl1);var wl2=new THREE.PointLight(0xffd88a,1,24);wl2.position.set(0,6,-5);zoneE.add(wl2);
 /* 카메라 */
 var yaw=0,pitch=.3,dist=9,tgt=new THREE.Vector3(0,1.7,9);
 function cam(){camera.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));camera.lookAt(tgt);}
@@ -184,7 +205,7 @@ cv.addEventListener('pointercancel',up);
 cv.addEventListener('pointerup',function(e){var wasTap=moved<8&&Object.keys(ptr).length==1;up(e);if(wasTap)tap(e.clientX,e.clientY);});
 cv.addEventListener('wheel',function(e){dist=Math.max(4,Math.min(24,dist+e.deltaY*.02));},{passive:true});
 var ray=new THREE.Raycaster(),v2=new THREE.Vector2();
-function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.mask)return maskOff();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
+function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
 /* 모달 */
 var md=document.getElementById('modal'),mb=document.getElementById('mb');
 function modal(h){mb.innerHTML=h;md.classList.remove('hide');}
@@ -221,7 +242,7 @@ for(var i=0;i<gn;i++){var v=Math.pow(Math.max(0,Math.sin(T*gsp[i]+gph[i])),10)*g
 av.userData.b+=(gy-av.userData.b)*Math.min(1,dt*10);var jp=0;if(emote>0){emote-=dt;jp=Math.sin((1-Math.max(emote,0)/.7)*Math.PI)*.8;}
 av.position.y=av.userData.b+(dest?Math.abs(Math.sin(walkT))*.08:0)+jp;legL.rotation.x=dest?Math.sin(walkT)*.7:0;legR.rotation.x=-legL.rotation.x;armL.rotation.x=legL.rotation.x*.8;armR.rotation.x=-legL.rotation.x*.8;armL.rotation.z=emote>0?-2.6:-.65;armR.rotation.z=emote>0?2.6:.65;
 tv.set(av.position.x,av.position.y+1.6,av.position.z);tgt.lerp(tv,Math.min(1,dt*6));
-moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
+if(zone==2){for(var j=0;j<strs.length;j++)strs[j].rotation.z=Math.sin(T*.8+j)*.08;for(var j=0;j<fires.length;j++){fires[j].position.y+=Math.sin(T*1.3+j)*.004;fires[j].material.opacity=.6+Math.sin(T*2+j)*.3;}orb.scale.setScalar(1+Math.sin(T*3)*.12);}moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
 addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 loop();
 })();
