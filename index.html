@@ -12,8 +12,9 @@ canvas{display:block;position:fixed;inset:0;width:100%;height:100%}
 .hud .pill{height:46px;padding:0 16px;gap:10px;font-size:14px;font-weight:600;pointer-events:auto}
 .hud button{background:none;border:0;color:inherit;font-size:19px;padding:6px 4px}
 .bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:8px 10px}
-.bar button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 14px;border-radius:18px;min-width:52px}
-.bar button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
+.bar button,.emo button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 14px;border-radius:18px;min-width:52px}
+.bar button i,.emo button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
+.emo{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 98px);padding:6px 8px}.emo.hide{display:none}
 .hint{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 108px);text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 8px #000;pointer-events:none;transition:opacity 1s}
 .modal{position:fixed;z-index:100;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.6)}
 .modal.hide{display:none}.modal h3{margin:0 0 8px;font-size:18px;color:var(--gold)}.modal p{margin:0 0 12px;color:var(--sub);font-size:14px;line-height:1.55}
@@ -21,9 +22,10 @@ canvas{display:block;position:fixed;inset:0;width:100%;height:100%}
 .modal .btn,.modal a{display:inline-block;background:linear-gradient(135deg,#ffb36b,#ff7aa8);color:#1a0b1c;font-weight:700;border:0;border-radius:12px;padding:10px 14px;font-size:14px;text-decoration:none;margin:0 6px 6px 0}
 .modal .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--sub);font-size:22px}
 </style></head><body>
-<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span></div><div class="pill"><span id="lc">🏮 0</span><button id="bBgm">🔇</button><button id="bPhoto">🖼</button></div></div>
+<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span></div><div class="pill"><span id="lc">🏮 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bPhoto">🖼</button></div></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
-<div class="bar pill"><button id="bWish"><i>🏮</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bCheer"><i>🥝</i>응원</button></div>
+<div class="bar pill"><button id="bWish"><i>🏮</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bAct"><i>🙌</i>동작</button></div>
+<div class="pill emo hide" id="emo"><button data-e="cheer"><i>🥝</i>응원</button><button data-e="wave"><i>👋</i>인사</button><button data-e="heart"><i>💗</i>하트</button></div>
 <div id="fade"></div><div class="modal hide" id="modal"><button class="x" id="mx">×</button><div id="mb"></div></div>
 <input type="file" id="file" accept="image/*" multiple hidden>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -134,12 +136,28 @@ var deck=new THREE.Mesh(new THREE.BoxGeometry(9.4,.3,25),new THREE.MeshPhongMate
 for(var zz=-9;zz<=13;zz+=3.5)[-4.7,4.7].forEach(function(x){var p=new THREE.Mesh(new THREE.CylinderGeometry(.08,.1,1.2,6),new THREE.MeshPhongMaterial({color:0x3a2a1e}));p.position.set(x,.6,zz);scene.add(p);var l=sprite(gO,1.8);l.position.set(x,1.35,zz);scene.add(l);});
 var NICK=['별빛 키위','햇빛 키위','달빛 키위','구름 키위','이슬 키위','솔잎 키위','연꽃 키위','은하 키위','노을 키위','새벽 키위','꽃잎 키위','바람 키위','봄빛 키위','푸른 키위','반짝 키위','포근 키위','살랑 키위','몽글 키위','달콤 키위','싱그런 키위'],av=new THREE.Group(),tv=new THREE.Vector3(),dest=null,walkT=0,emote=0,wn=0;
 var K=makeKiwi(),legL=K.legL,legR=K.legR,armL=K.armL,armR=K.armR;av.add(K.g);
-(function(){var n=NICK[Math.floor(Math.random()*NICK.length)],c=document.createElement('canvas');c.width=360;c.height=72;var g=c.getContext('2d');g.fillStyle='rgba(246,242,232,.94)';g.beginPath();if(g.roundRect)g.roundRect(4,6,352,60,30);else g.rect(4,6,352,60);g.fill();g.fillStyle='#6b7f5a';g.beginPath();g.arc(40,36,24,0,6.283);g.fill();g.fillStyle='#fff';g.font='bold 24px sans-serif';g.textAlign='center';g.fillText('나',40,45);g.fillStyle='#2a2a26';g.font='bold 30px sans-serif';g.textAlign='left';g.fillText(n,78,46);var t=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false,depthWrite:false,fog:false}));t.scale.set(2.8,.56,1);t.position.y=2.45;t.renderOrder=10;av.add(t);})();
+var nc=document.createElement('canvas');nc.width=360;nc.height=72;var ntx=new THREE.CanvasTexture(nc),nsp=new THREE.Sprite(new THREE.SpriteMaterial({map:ntx,transparent:true,depthTest:false,depthWrite:false,fog:false}));nsp.scale.set(2.8,.56,1);nsp.position.y=2.45;nsp.renderOrder=10;av.add(nsp);
+function setName(n){var g=nc.getContext('2d');g.clearRect(0,0,360,72);g.fillStyle='rgba(246,242,232,.94)';g.beginPath();if(g.roundRect)g.roundRect(4,6,352,60,30);else g.rect(4,6,352,60);g.fill();g.fillStyle='#6b7f5a';g.beginPath();g.arc(40,36,24,0,6.283);g.fill();g.fillStyle='#fff';g.font='bold 24px sans-serif';g.textAlign='center';g.fillText('나',40,45);g.fillStyle='#2a2a26';g.font='bold 30px sans-serif';g.textAlign='left';g.fillText(n,78,46,260);ntx.needsUpdate=true;}
+var myName=null;try{myName=localStorage.getItem('kiwi_nick');}catch(e){}
+if(!myName){myName=NICK[Math.floor(Math.random()*NICK.length)];try{localStorage.setItem('kiwi_nick',myName);}catch(e){}}
+if(!/키위$/.test(myName))myName+=' 키위';
+setName(myName);
+function loadL(){try{return JSON.parse(localStorage.getItem('kiwi_lanterns')||'[]');}catch(e){return [];}}
+function saveL(t,x,z){var a=loadL();a.push({t:t,x:+x.toFixed(2),z:+z.toFixed(2)});try{localStorage.setItem('kiwi_lanterns',JSON.stringify(a.slice(-30)));}catch(e){}}
+loadL().forEach(function(d){if(d&&typeof d.t==='string')lantern(d.t.slice(0,16),+d.x||6,+d.z||4);});wn=loadL().length;if(wn)document.getElementById('lc').textContent='🏮 '+wn;
+function rename(){modal('<h3>✏️ 내 이름 짓기</h3><p>이름 뒤에 키위가 자동으로 붙어요. 예: 하늘 → 하늘 키위</p><input id="nn" maxlength="8" placeholder="이름 (8자 이내)"><button class="btn" id="nk">저장</button><button class="btn" id="nr">소원등 모두 지우기</button><p style="font-size:12px;margin:6px 0 0">이름과 소원등은 이 휴대폰 브라우저에만 저장돼요.</p>');var ip=document.getElementById('nn');ip.value=myName.replace(/\s*키위$/,'');
+document.getElementById('nk').onclick=function(){var n=ip.value.trim();if(!n)return;n=n.replace(/\s*키위\s*$/,'').trim().slice(0,8);n=n?n+' 키위':'키위';myName=n;try{localStorage.setItem('kiwi_nick',n);}catch(e){}setName(n);closeM();};
+document.getElementById('nr').onclick=function(){try{localStorage.removeItem('kiwi_lanterns');}catch(e){}location.reload();};}
+document.getElementById('bName').onclick=rename;
 av.position.set(0,.1,9);av.rotation.y=Math.PI;av.userData.b=.1;scene.add(av);
 function clampP(p){if(zone){var r=Math.hypot(p.x,p.z);if(r>6.4){p.x*=6.4/r;p.z*=6.4/r;}}else if(p.z<-10){p.x=Math.max(-17,Math.min(17,p.x));p.z=Math.max(-17.2,p.z);}else{p.x=Math.max(-4.4,Math.min(4.4,p.x));p.z=Math.min(13,p.z);}}
 function moveTo(){var pl=new THREE.Plane(new THREE.Vector3(0,1,0),-(zone?.4:(av.position.z<-10?.72:.1))),pt=new THREE.Vector3();if(ray.ray.intersectPlane(pl,pt)){clampP(pt);dest=pt;}}
 var hint=document.getElementById('hint');setTimeout(function(){hint.style.opacity=0;},7000);
-document.getElementById('bCheer').onclick=function(){emote=.7;burst(av.position.x,av.position.y+2,av.position.z,0xa4cf3f);pluck(660);};
+var emoEl=document.getElementById('emo'),act=null,actT=0,hearts=[],hc=document.createElement('canvas');hc.width=hc.height=128;var hx=hc.getContext('2d');hx.font='92px sans-serif';hx.textAlign='center';hx.textBaseline='middle';hx.fillText('💗',64,68);var hTex=new THREE.CanvasTexture(hc);
+function hrt(){for(var k=0;k<7;k++){var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:hTex,transparent:true,depthWrite:false,fog:false,opacity:0}));sp.scale.set(.6,.6,1);sp.position.set(av.position.x+(Math.random()-.5)*.9,av.position.y+2.3,av.position.z+(Math.random()-.5)*.5);scene.add(sp);hearts.push({s:sp,t:-k*.15});}}
+function doAct(e){if(e=='cheer'){emote=.7;burst(av.position.x,av.position.y+2,av.position.z,0xa4cf3f);pluck(660);return;}dest=null;av.rotation.y=Math.atan2(camera.position.x-av.position.x,camera.position.z-av.position.z);act=e;actT=0;if(e=='heart')hrt();pluck(e=='wave'?587:880);}
+document.getElementById('bAct').onclick=function(){emoEl.classList.toggle('hide');};
+[].forEach.call(emoEl.querySelectorAll('button'),function(b){b.onclick=function(){emoEl.classList.add('hide');doAct(b.dataset.e);};});
 /* 입청운 구름 누각 */
 var zoneD=new THREE.Group();zoneD.visible=false;scene.add(zoneD);var cg=new THREE.Group();zoneD.add(cg);var pickD=[],zone=0;
 var cloudT=(function(){var k=document.createElement('canvas');k.width=k.height=128;var g=k.getContext('2d'),r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,255,255,.85)');r.addColorStop(.5,'rgba(235,240,255,.4)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(k);})();
@@ -213,7 +231,7 @@ function closeM(){md.classList.add('hide');mb.innerHTML='';}
 document.getElementById('mx').onclick=closeM;
 function openFrame(f){if(f.k=='bday')return bday();if(f.k=='dance'){toggleDance(true);setBgm(false);modal('<h3>소시구 A반 칼군무</h3><video id="dv" src="' + assetBase + 'sosigu_a_dance.mp4" playsinline controls autoplay style="width:100%;max-height:58vh;border-radius:12px;margin-bottom:10px;background:#000"></video><a href="'+f.l[0]+'" target="_blank" rel="noopener">스레드 원본 보기</a>');return;}var h='<h3>'+f.t+'</h3><p>'+(f.d||'키위 모두 함께 추는 소시구 A반 칼군무 연회! 조명과 음악이 축제 모드로 바뀌었어요.')+'</p>';if(f.l)h+='<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>';modal(h);}
 function bday(){modal('<h3>🎂 0803 생일 소원 라운지</h3><p>바이크 피규어가 얹힌 별빛 케이크 앞에서, 밍이에게 건네고 싶은 소원을 빌어 보세요.</p><button class="btn" id="mk">소원 빌기 ✨</button>');document.getElementById('mk').onclick=function(){party();mb.innerHTML='<h3>🎉 생일 축하해요, 밍이!</h3><p>키위 모두의 소원이 밤하늘로 올라갔어요.</p>';};}
-function wish(){modal('<h3>🏮 소원 연꽃등</h3><p>소원을 적으면 불 켜진 연꽃등이 연화지 호수로 떠올라요.</p><input id="wt" maxlength="16" placeholder="소원 한 줄 (16자)"><button class="btn" id="wk">띄우기</button>');document.getElementById('wk').onclick=function(){var t=document.getElementById('wt').value.trim();if(!t)return;var g=lantern(t,(Math.random()<.5?-1:1)*(5.8+Math.random()*3.5),av.position.z-2);g.userData.new=1;document.getElementById('lc').textContent='🏮 '+(++wn);burst(g.position.x,1.5,g.position.z,0xffb36b);closeM();};}
+function wish(){modal('<h3>🏮 소원 연꽃등</h3><p>소원을 적으면 불 켜진 연꽃등이 연화지 호수로 떠올라요. 다시 들어와도 내 소원등이 남아 있어요.</p><input id="wt" maxlength="16" placeholder="소원 한 줄 (16자)"><button class="btn" id="wk">띄우기</button>');document.getElementById('wk').onclick=function(){var t=document.getElementById('wt').value.trim();if(!t)return;var g=lantern(t,(Math.random()<.5?-1:1)*(5.8+Math.random()*3.5),av.position.z-2);g.userData.new=1;document.getElementById('lc').textContent='🏮 '+(++wn);saveL(t,g.position.x,g.position.z);burst(g.position.x,1.5,g.position.z,0xffb36b);closeM();};}
 document.getElementById('bWish').onclick=wish;document.getElementById('bBday').onclick=bday;
 /* 사진 교체 */
 var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
@@ -242,7 +260,9 @@ for(var i=0;i<gn;i++){var v=Math.pow(Math.max(0,Math.sin(T*gsp[i]+gph[i])),10)*g
 av.userData.b+=(gy-av.userData.b)*Math.min(1,dt*10);var jp=0;if(emote>0){emote-=dt;jp=Math.sin((1-Math.max(emote,0)/.7)*Math.PI)*.8;}
 av.position.y=av.userData.b+(dest?Math.abs(Math.sin(walkT))*.08:0)+jp;legL.rotation.x=dest?Math.sin(walkT)*.7:0;legR.rotation.x=-legL.rotation.x;armL.rotation.x=legL.rotation.x*.8;armR.rotation.x=-legL.rotation.x*.8;armL.rotation.z=emote>0?-2.6:-.65;armR.rotation.z=emote>0?2.6:.65;
 tv.set(av.position.x,av.position.y+1.6,av.position.z);tgt.lerp(tv,Math.min(1,dt*6));
-if(zone==2){for(var j=0;j<strs.length;j++)strs[j].rotation.z=Math.sin(T*.8+j)*.08;for(var j=0;j<fires.length;j++){fires[j].position.y+=Math.sin(T*1.3+j)*.004;fires[j].material.opacity=.6+Math.sin(T*2+j)*.3;}orb.scale.setScalar(1+Math.sin(T*3)*.12);}moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
+if(zone==2){for(var j=0;j<strs.length;j++)strs[j].rotation.z=Math.sin(T*.8+j)*.08;for(var j=0;j<fires.length;j++){fires[j].position.y+=Math.sin(T*1.3+j)*.004;fires[j].material.opacity=.6+Math.sin(T*2+j)*.3;}orb.scale.setScalar(1+Math.sin(T*3)*.12);}if(act=='wave'){actT+=dt;armR.rotation.z=2.3+Math.sin(actT*14)*.35;if(actT>2)act=null;}else if(act=='heart'){actT+=dt;armL.rotation.z=-2.4;armR.rotation.z=2.4;if(actT>1.4)act=null;}
+for(var h=hearts.length-1;h>=0;h--){var q=hearts[h];q.t+=dt;if(q.t<0)continue;q.s.position.y+=dt*1.1;q.s.position.x+=Math.sin(q.t*4+h)*.01;q.s.material.opacity=Math.max(0,1-q.t/1.8);if(q.t>1.8){scene.remove(q.s);q.s.material.dispose();hearts.splice(h,1);}}
+moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
 addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 loop();
 })();
