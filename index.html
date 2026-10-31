@@ -650,11 +650,11 @@
     stickMesh.rotation.z = -0.35;
     mascotGroup.add(stickMesh);
 
-    const starGeo = new THREE.DodecahedronGeometry(0.25);
-    const starMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const starMesh = new THREE.Mesh(starGeo, starMat);
-    starMesh.position.set(1.1, 1.45, 0.3);
-    mascotGroup.add(starMesh);
+    const mascotStarGeo = new THREE.DodecahedronGeometry(0.25);
+    const mascotStarMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const mascotStarMesh = new THREE.Mesh(mascotStarGeo, mascotStarMat);
+    mascotStarMesh.position.set(1.1, 1.45, 0.3);
+    mascotGroup.add(mascotStarMesh);
 
     scene.add(mascotGroup);
 
