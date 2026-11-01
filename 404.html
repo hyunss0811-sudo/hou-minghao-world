@@ -27,6 +27,7 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .hud{z-index:10;position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;justify-content:space-between;align-items:center;pointer-events:none}
 .hud .pill{height:46px;padding:0 16px;gap:10px;font-size:14px;font-weight:600;pointer-events:auto}
 .hud button{background:none;border:0;color:inherit;font-size:19px;padding:6px 4px}
+.phb{z-index:10;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);padding:8px 14px;gap:14px}.phb.hide{display:none}.phb button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 8px;min-width:48px}.phb button i{font-style:normal;font-size:22px}.phb #phK{width:64px;height:64px;border-radius:50%;background:#fff;color:#1a0b1c;justify-content:center;font-size:26px;box-shadow:0 0 0 4px rgba(255,255,255,.35)}.phh{z-index:10;position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 8px #000;pointer-events:none}.phh.hide{display:none}body.ph .hud,body.ph .bar,body.ph .hint,body.ph .gxp{display:none!important}
 .bar{z-index:10;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:8px 10px}
 .bar button,.emo button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 9px;border-radius:18px;min-width:46px}
 .bar button i,.emo button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
@@ -38,7 +39,8 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .modal .btn,.modal a{display:inline-block;background:linear-gradient(135deg,#ffb36b,#ff7aa8);color:#1a0b1c;font-weight:700;border:0;border-radius:12px;padding:10px 14px;font-size:14px;text-decoration:none;margin:0 6px 6px 0}
 .modal .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--sub);font-size:22px}
 </style></head><body>
-<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bPhoto">🖼</button></div></div>
+<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bShot">📸</button><button id="bPhoto">🖼</button></div></div>
+<div class="phh hide" id="phh">구도를 잡고 📸를 눌러요 · 눌러서 이동할 수 있어요</div><div class="pill phb hide" id="phb"><button id="phF"><i>🖼</i><span id="phFn">달빛</span></button><button id="phK">📸</button><button id="phP"><i>🙌</i>포즈</button><button id="phX"><i>✖</i>닫기</button></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
 <div class="bar pill"><button id="bWish"><i>🪷</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bGx"><i>🌌</i>떼창</button><button id="bAct"><i>🙌</i>동작</button></div>
 <div class="pill emo gxp hide" id="gxp"><span id="gxn">🌌 떼창</span><button id="gxS"><i>💚</i>외치기</button><button id="gxL"><i>🎵</i>라이브</button><button id="gxX"><i>✖</i>끝내기</button></div>
@@ -53,7 +55,7 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 var assetBase = location.origin.includes('github.io') ? 'assets/' : 'https://raw.githubusercontent.com/hyunss0811-sudo/hou-minghao-world/main/assets/';
 var scene=new THREE.Scene();scene.background=new THREE.Color(0x070b1f);scene.fog=new THREE.FogExp2(0x0a1233,0.016);
 var camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,300);
-var renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+var renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
 var cv=renderer.domElement;
 function glowTex(c){var k=document.createElement('canvas');k.width=k.height=64;var g=k.getContext('2d'),r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,c);r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(k);}
 var gW=glowTex('rgba(255,255,255,1)'),gO=glowTex('rgba(255,170,90,.9)');
@@ -453,6 +455,28 @@ function wish(){
 }
 document.getElementById('bWish').onclick=wish;document.getElementById('bBday').onclick=bday;
 /* 사진 교체 */
+var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
+fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,FR.length);fs.forEach(function(f,i){new THREE.TextureLoader().load(URL.createObjectURL(f),function(t){setImg(FR[i],t);});});};
+/* 포토부스 */
+var phOn=false,phFr=0,phBlob=null,phUrl=null,PHN=['달빛','키위','없음'];
+function setPhoto(on){phOn=on;document.body.classList.toggle('ph',on);document.getElementById('phb').classList.toggle('hide',!on);document.getElementById('phh').classList.toggle('hide',!on);if(on){setGalaxy(false);}else{emoEl.classList.add('hide');}}
+function phRR(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function drawFrame(g,W,H){var u=W/390,d=new Date(),ds=d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2);g.textBaseline='alphabetic';
+ if(phFr===0){var gr=g.createLinearGradient(0,H-86*u,0,H);gr.addColorStop(0,'rgba(7,11,31,0)');gr.addColorStop(1,'rgba(7,11,31,.75)');g.fillStyle=gr;g.fillRect(0,H-86*u,W,86*u);g.strokeStyle='rgba(255,216,138,.9)';g.lineWidth=2*u;phRR(g,10*u,10*u,W-20*u,H-20*u,18*u);g.stroke();g.textAlign='left';g.fillStyle='#fff';g.font='bold '+(16*u)+'px sans-serif';g.fillText('🥝 후밍하오 3D 팬 라운지',24*u,H-42*u);g.fillStyle='#ffd88a';g.font=(12*u)+'px sans-serif';g.fillText('달빛 비경 · '+ds+' · '+myName,24*u,H-22*u);}
+ else if(phFr===1){var b=12*u;g.fillStyle='#a4cf3f';g.fillRect(0,0,W,b);g.fillRect(0,0,b,H);g.fillRect(W-b,0,b,H);var bh=64*u;g.fillRect(0,H-bh,W,bh);g.strokeStyle='#fff';g.lineWidth=2*u;phRR(g,b,b,W-2*b,H-bh-b,10*u);g.stroke();g.textAlign='center';g.fillStyle='#1d3a0a';g.font='bold '+(16*u)+'px sans-serif';g.fillText('🥝 키위들의 달빛 비경',W/2,H-bh+27*u);g.font=(12*u)+'px sans-serif';g.fillText(ds+' · '+myName,W/2,H-bh+47*u);}
+ else{g.textAlign='right';g.fillStyle='rgba(255,255,255,.8)';g.font=(11*u)+'px sans-serif';g.shadowColor='rgba(0,0,0,.7)';g.shadowBlur=4*u;g.fillText('🥝 후밍하오 3D 팬 라운지',W-14*u,H-14*u);g.shadowBlur=0;}}
+function shoot(){var bt=document.getElementById('phb');renderer.render(scene,camera);var src=renderer.domElement,W=src.width,H=src.height,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');g.drawImage(src,0,0);drawFrame(g,W,H);
+ c.toBlob(function(bl){if(!bl)return;phBlob=bl;if(phUrl){try{URL.revokeObjectURL(phUrl);}catch(e){}}phUrl=URL.createObjectURL(bl);
+ modal('<h3>📸 찰칵!</h3><img src="'+phUrl+'" style="width:100%;border-radius:12px;display:block;margin-bottom:10px"><p>길게 눌러 저장하거나 아래 버튼을 눌러요</p><button class="btn" id="phS">💾 저장</button><button class="btn" id="phH">📤 공유</button><button class="btn" id="phR">다시 찍기</button>');
+ document.getElementById('phR').onclick=closeM;
+ document.getElementById('phS').onclick=function(){var a=document.createElement('a');a.href=phUrl;a.download='kiwi-lounge-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);};
+ document.getElementById('phH').onclick=function(){try{var f=new File([phBlob],'kiwi-lounge.jpg',{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'후밍하오 3D 팬 라운지',text:'🥝 달빛 비경에서 찍은 사진 · https://hou-minghao-world-live.deed.page/'}).catch(function(){});}else{alert('이 브라우저는 바로 공유가 안 돼요. 사진을 길게 눌러 저장한 뒤 올려주세요!');}}catch(e){alert('사진을 길게 눌러 저장한 뒤 올려주세요!');}};
+ },'image/jpeg',.92);}
+document.getElementById('bShot').onclick=function(){setPhoto(true);};
+document.getElementById('phX').onclick=function(){setPhoto(false);};
+document.getElementById('phK').onclick=shoot;
+document.getElementById('phF').onclick=function(){phFr=(phFr+1)%3;document.getElementById('phFn').textContent=PHN[phFr];};
+document.getElementById('phP').onclick=function(){emoEl.classList.toggle('hide');};
 var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
 fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,FR.length);fs.forEach(function(f,i){new THREE.TextureLoader().load(URL.createObjectURL(f),function(t){setImg(FR[i],t);});});};
 /* 오디오 */
