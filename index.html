@@ -32,11 +32,11 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .bar button i,.emo button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
 .emo{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 98px);padding:6px 8px}.emo.hide{display:none}
 .hint{z-index:2;position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 108px);text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 8px #000;pointer-events:none;transition:opacity 1s}
-.modal{z-index:4;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.modal{z-index:4;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,400px);max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.6);box-sizing:border-box}
 .modal.hide{display:none}.modal h3{margin:0 0 8px;font-size:18px;color:var(--gold)}.modal p{margin:0 0 12px;color:var(--sub);font-size:14px;line-height:1.55}
 .modal input{width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--tx);font-size:16px;margin-bottom:10px;-webkit-user-select:text;user-select:text}
 .modal .btn,.modal a{display:inline-block;background:linear-gradient(135deg,#ffb36b,#ff7aa8);color:#1a0b1c;font-weight:700;border:0;border-radius:12px;padding:10px 14px;font-size:14px;text-decoration:none;margin:0 6px 6px 0}
-.modal .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--sub);font-size:22px}
+.modal .x{position:absolute;right:12px;top:10px;background:rgba(0,0,0,.45);border:1px solid var(--line);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--tx);font-size:20px;cursor:pointer;z-index:10}
 </style></head><body>
 <div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bPhoto">🖼</button></div></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
@@ -95,7 +95,7 @@ var FR=[
 {t:'키위 카페',s:'별 글리터',c1:'#7fe0c0',c2:'#2a3a7a',img:'star_glitter_casual.jpg',k:'info',d:'볼과 콧등에 별 글리터를 붙인 청량 소년미 컷. 키위 카페 포토카드 스탠드예요.'},
 {t:'천년 연화지',s:'수련 포스터',c1:'#ff9ab0',c2:'#1b3a4a',img:'da_meng_gui_li_shirtless_lotus_pond_official_poster.jpg',k:'info',d:'수련 꽃과 붉은 잉어가 노니는 연화지의 공식 포스터예요.'},
 {t:'0803 생일 소원',s:'바이크 케이크',c1:'#ff9a6b',c2:'#6b2a7a',img:'birthday_wish_favorite.jpg',k:'bday'},
-{t:'我是妖',s:'지우산 웰컴',c1:'#ff5a7a',c2:'#1a1a4a',img:'da_meng_gui_li_not_human_im_demon_entrance.jpg',k:'info',d:'비 내리는 밤안개 속, 붉은 방울 지우산을 들어 올리며 나는 요괴다 라고 말하는 주염의 첫 등장이에요.',l:['https://www.threads.com/share/BAAqtSx6E6/','첫 등장 보기']},
+{t:'我是妖',s:'지우산 웰컴',c1:'#ff5a7a',c2:'#1a1a4a',img:'da_meng_gui_li_not_human_im_demon_entrance.jpg',k:'info',d:'비 내리는 밤안개 속, 붉은 방울 지우산을 들어 올리며 "나는 요괴다(我是妖)"라고 선언하는 대요괴 주염의 레전드 첫 등장 명장면이에요.'},
 {t:'34화 13:02',s:'조원주의 마지막 미소',c1:'#6aa8ff',c2:'#1b2552',img:'da_meng_gui_li_zhao_yuanzhou_death_scene_hd_clean.png',k:'info',d:'대몽귀리 34화 희생 클라이맥스 씬. 공식 풀영상의 13:02 지점이에요.',l:['https://youtu.be/dqoW245X3X4?t=782','13:02 바로 보기']},
 {t:'소시구 A반',s:'칼군무 연회',c1:'#8be59a',c2:'#1f4a6b',img:'da_meng_gui_li_official_group_cast_poster.jpg',k:'dance',l:['https://www.threads.com/share/BAbFOZUIVB/','군무 영상 보기']},
 {t:'기백재',s:'입청운 · 가면 벗기',c1:'#ffd88a',c2:'#4a2a6b',img:'ru_qing_yun_smug_arrogant_nobleman.jpg',k:'info',d:'구름 바다 누각의 오만한 기백재. 가면을 벗는 명장면 쇼츠를 볼 수 있어요.',l:['https://youtube.com/shorts/L2kEQ7AZfx8','Mask Off 쇼츠']},
@@ -219,7 +219,7 @@ var pgeo=new THREE.BufferGeometry();pgeo.setAttribute('position',new THREE.Buffe
 var wl=new THREE.PointLight(0xffc98a,1.1,40);wl.position.set(0,7,2);zoneD.add(wl);
 var fade=document.getElementById('fade'),tt=document.getElementById('tt');
 function goZone(n){closeM();fade.style.opacity=1;setTimeout(function(){zone=n;scene.children.forEach(function(c){if(c!==zoneD&&c!==zoneE&&c!==av&&c!==remG&&!c.isLight)c.visible=(n==0);});zoneD.visible=(n==1);zoneE.visible=(n==2);disco.visible=(n==0);scene.background.set(n==2?0x1c0a18:n?0x2c3f7a:0x070b1f);scene.fog.color.set(n==2?0x2a1020:n?0x4d5f9a:0x0a1233);scene.fog.density=n==2?.02:n?.013:.016;av.position.set(0,n?.4:.1,n==2?6:n?5:9);av.rotation.y=Math.PI;dest=null;av.userData.b=av.position.y;tgt.set(av.position.x,av.position.y+1.6,av.position.z);yaw=0;pitch=.3;dist=9;tt.innerHTML=n==2?'🦊 호요소홍랑 · 명예의 전당':n?'☁️ 입청운 · 구름 바다 누각':'🌙 달빛 비경';['bWish','bBday','bDance'].forEach(function(id){document.getElementById(id).style.display=n?'none':'';});fade.style.opacity=0;},450);}
-function maskOff(){if(mk.off)return;mk.off=true;mk.t=0;burst(0,4,-1,0xffd88a);modal('<h3>🎭 기백재 가면 벗기</h3><p>오만한 기백재가 가면을 벗는 순간이에요.</p><a href="https://youtube.com/shorts/L2kEQ7AZfx8" target="_blank" rel="noopener">Mask Off 쇼츠</a><a href="https://youtube.com/shorts/0vUnxt6o3YQ" target="_blank" rel="noopener">배신 오열 쇼츠</a>');}
+function maskOff(){if(mk.off)return;mk.off=true;mk.t=0;burst(0,4,-1,0xffd88a);vid=true;prevBgm=bgm;if(bgm)setBgm(false);modal('<h3>🎭 기백재 가면 벗기</h3><div style="position:relative;width:100%;max-width:270px;margin:0 auto 12px;padding-bottom:115%;height:0;overflow:hidden;border-radius:12px;background:#000"><iframe src="https://www.youtube.com/embed/L2kEQ7AZfx8?autoplay=1&playsinline=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p>오만한 기백재가 가면을 벗으며 정체를 드러내는 명장면이에요.</p>');}
 pickD.push(maskM);
 /* 호요소홍랑 명예의 전당 */
 var zoneE=new THREE.Group();zoneE.visible=false;scene.add(zoneE);var pickE=[];
@@ -283,12 +283,68 @@ cv.addEventListener('pointerup',function(e){var wasTap=moved<8&&Object.keys(ptr)
 cv.addEventListener('wheel',function(e){dist=Math.max(4,Math.min(24,dist+e.deltaY*.02));},{passive:true});
 var ray=new THREE.Raycaster(),v2=new THREE.Vector2();
 function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
-/* 모달 */
-var md=document.getElementById('modal'),mb=document.getElementById('mb');
+/* 모달 & 인앱 미디어 연출 */
+var md=document.getElementById('modal'),mb=document.getElementById('mb'),prevBgm=false;
 function modal(h){mb.innerHTML=h;md.classList.remove('hide');}
-function closeM(){md.classList.add('hide');mb.innerHTML='';if(vid){vid=false;toggleDance(false);}}
+function closeM(){md.classList.add('hide');mb.innerHTML='';if(vid){vid=false;toggleDance(false);if(prevBgm)setBgm(true);}}
 document.getElementById('mx').onclick=closeM;
-function openFrame(f){if(f.k=='bday')return bday();if(f.k=='dance'){vid=true;toggleDance(true);setBgm(false);modal('<h3>소시구 A반 칼군무</h3><video id="dv" src="' + assetBase + 'sosigu_a_dance.mp4" playsinline controls autoplay style="width:100%;max-height:58vh;border-radius:12px;margin-bottom:10px;background:#000"></video><a href="'+f.l[0]+'" target="_blank" rel="noopener">스레드 원본 보기</a>');return;}var h='<h3>'+f.t+'</h3><p>'+(f.d||'키위 모두 함께 추는 소시구 A반 칼군무 연회! 조명과 음악이 축제 모드로 바뀌었어요.')+'</p>';if(f.l)h+='<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>';modal(h);}
+
+function getYouTubeEmbed(url){
+  if(!url)return null;
+  var vid=null,start=0,isShorts=false;
+  var m;
+  if((m=url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})(?:\?t=(\d+))?/))){
+    vid=m[1];if(m[2])start=parseInt(m[2],10);
+  }else if((m=url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/))){
+    vid=m[1];var tm=url.match(/[?&]t=(\d+)/);if(tm)start=parseInt(tm[1],10);
+  }else if((m=url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/))){
+    vid=m[1];isShorts=true;
+  }
+  if(vid){
+    var src='https://www.youtube.com/embed/'+vid+'?autoplay=1&playsinline=1'+(start?'&start='+start:'');
+    return {src:src,isShorts:isShorts};
+  }
+  return null;
+}
+
+function openFrame(f){
+  if(f.k=='bday')return bday();
+  
+  // 1. 소시구 A반 군무 (인앱 mp4 비디오)
+  if(f.k=='dance'){
+    vid=true;prevBgm=bgm;toggleDance(true);setBgm(false);
+    modal('<h3>💃 소시구 A반 칼군무</h3>' +
+      '<video id="dv" src="' + assetBase + 'sosigu_a_dance.mp4" playsinline controls autoplay style="width:100%;max-height:52vh;border-radius:12px;margin-bottom:12px;background:#000"></video>' +
+      '<p>키위 모두 함께 추는 소시구 A반 칼군무 연회! 3D 라운지에서 고화질 영상으로 바로 감상해요.</p>');
+    return;
+  }
+  
+  var yt = (f.l && f.l[0]) ? getYouTubeEmbed(f.l[0]) : null;
+  
+  // 2. 유튜브 장면 클립 (34화 13:02 희생, 기백재 가면 벗기, 난징 라이브 등) -> 인앱 플레이어
+  if(yt){
+    vid=true;prevBgm=bgm;if(bgm)setBgm(false);
+    var h = '<h3>' + f.t + '</h3>';
+    if(yt.isShorts){
+      h += '<div style="position:relative;width:100%;max-width:270px;margin:0 auto 12px;padding-bottom:115%;height:0;overflow:hidden;border-radius:12px;background:#000">';
+    } else {
+      h += '<div style="position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-bottom:12px;background:#000">';
+    }
+    h += '<iframe src="' + yt.src + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+    h += '</div>';
+    h += '<p>' + (f.d || '') + '</p>';
+    modal(h);
+    return;
+  }
+  
+  // 3. 고화질 사진 전시 프레임 (我是妖 지우산, 키위 카페, 천년 연화지, 호요소홍랑 등) -> 실물 사진 확대 전시
+  var h = '<h3>' + f.t + '</h3>';
+  if(f.img){
+    h += '<img src="' + assetBase + encodeURI(f.img) + '" style="width:100%;max-height:50vh;object-fit:contain;border-radius:12px;margin-bottom:12px;background:rgba(0,0,0,.45);display:block">';
+  }
+  h += '<p>' + (f.d || '') + '</p>';
+  modal(h);
+}
 function bday(){modal('<h3>🎂 0803 생일 소원 라운지</h3><p>바이크 피규어가 얹힌 별빛 케이크 앞에서, 밍이에게 건네고 싶은 소원을 빌어 보세요.</p><button class="btn" id="mk">소원 빌기 ✨</button>');document.getElementById('mk').onclick=function(){party();mb.innerHTML='<h3>🎉 생일 축하해요, 밍이!</h3><p>키위 모두의 소원이 밤하늘로 올라갔어요.</p>';};}
 function wish(){modal('<h3>🪷 소원 연꽃등</h3><p>소원을 적으면 불 켜진 연꽃등이 연화지 호수로 떠올라요. 다시 들어와도 내 소원등이 남아 있고, 같은 방 키위들에게도 24시간 동안 보여요.</p><input id="wt" maxlength="12" placeholder="소원 한 줄 (12자)"><button class="btn" id="wk">띄우기</button>');document.getElementById('wk').onclick=function(){var t=document.getElementById('wt').value.trim();if(!t)return;var g=lantern(t,(Math.random()<.5?-1:1)*(5.8+Math.random()*3.5),clampZ(av.position.z+1.5));g.userData.new=1;document.getElementById('lc').textContent='🪷 '+(++wn);saveL(t,g.position.x,g.position.z);burst(g.position.x,1.5,g.position.z,0xffb36b);if(shareL(t,g.position.x,g.position.z))closeM();else modal('<h3>🪷 소원등을 띄웠어요</h3><p>이 문구는 다른 키위에게는 보이지 않고, 나만 볼 수 있어요.</p>');};}
 document.getElementById('bWish').onclick=wish;document.getElementById('bBday').onclick=bday;
