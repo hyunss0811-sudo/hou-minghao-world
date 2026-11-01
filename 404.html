@@ -39,7 +39,7 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .modal .btn,.modal a{display:inline-block;background:linear-gradient(135deg,#ffb36b,#ff7aa8);color:#1a0b1c;font-weight:700;border:0;border-radius:12px;padding:10px 14px;font-size:14px;text-decoration:none;margin:0 6px 6px 0}
 .modal .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--sub);font-size:22px}
 </style></head><body>
-<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bShot">📸</button><button id="bPhoto">🖼</button></div></div>
+<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bGuest">📜</button><button id="bShot">📸</button><button id="bPhoto">🖼</button></div></div>
 <div class="phh hide" id="phh">구도를 잡고 📸를 눌러요 · 눌러서 이동할 수 있어요</div><div class="pill phb hide" id="phb"><button id="phF"><i>🖼</i><span id="phFn">달빛</span></button><button id="phK">📸</button><button id="phP"><i>🙌</i>포즈</button><button id="phX"><i>✖</i>닫기</button></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
 <div class="bar pill"><button id="bWish"><i>🪷</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bGx"><i>🌌</i>떼창</button><button id="bAct"><i>🙌</i>동작</button></div>
@@ -273,7 +273,7 @@ function shareL(t,x,z){if(!okText(t))return false;if(!lref||!uid)return true;var
 function startRoom(rid){if(meRef)return;room=rid;var base=db.ref('rooms/'+room+'/players');meRef=base.child(uid);
 db.ref('.info/connected').on('value',function(s){if(s.val()===true){meRef.onDisconnect().remove();sendMe(true);}});
 base.on('child_added',function(s){if(s.key!==uid)addR(s.key,s.val());});base.on('child_changed',function(s){if(s.key!==uid)updR(s.key,s.val());});base.on('child_removed',function(s){delR(s.key);});cnt();
-lref=db.ref('rooms/'+room+'/lanterns');lref.on('child_added',addSL);lref.on('child_changed',function(sn){delSL(sn.key);addSL(sn);});lref.on('child_removed',function(sn){delSL(sn.key);});}
+lref=db.ref('rooms/'+room+'/lanterns');lref.on('child_added',addSL);lref.on('child_changed',function(sn){delSL(sn.key);addSL(sn);});lref.on('child_removed',function(sn){delSL(sn.key);});startGB();}
 function pickRoom(i){if(i>4){document.getElementById('rm').textContent=' · 방이 가득 찼어요 (혼자 둘러보기)';return;}db.ref('rooms/r'+i+'/players').once('value').then(function(sn){if(sn.numChildren()<20)startRoom('r'+i);else pickRoom(i+1);}).catch(fail);}
 if(typeof firebase!=='undefined'){try{firebase.initializeApp(CFG);db=firebase.database();firebase.auth().signInAnonymously().then(function(c){uid=c.user.uid;pickRoom(0);}).catch(fail);}catch(e){fail(e);}}else fail();
 /* 🌌 Galaxy 떼창 모드 */
@@ -335,7 +335,7 @@ cv.addEventListener('pointercancel',up);
 cv.addEventListener('pointerup',function(e){var wasTap=moved<8&&Object.keys(ptr).length==1;up(e);if(wasTap)tap(e.clientX,e.clientY);});
 cv.addEventListener('wheel',function(e){dist=Math.max(4,Math.min(24,dist+e.deltaY*.02));},{passive:true});
 var ray=new THREE.Raycaster(),v2=new THREE.Vector2();
-function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
+function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.guest)return guestbook();if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
 /* 모달 */
 var md=document.getElementById('modal'),mb=document.getElementById('mb');
 function modal(h){mb.innerHTML=h;md.classList.remove('hide');}
@@ -461,6 +461,24 @@ document.getElementById('bWish').onclick=wish;document.getElementById('bBday').o
 /* 사진 교체 */
 var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
 fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,FR.length);fs.forEach(function(f,i){new THREE.TextureLoader().load(URL.createObjectURL(f),function(t){setImg(FR[i],t);});});};
+/* 📜 방명록 */
+var gbMsgs=[],gbRef=null,gbKeys={},gbC=document.createElement('canvas');gbC.width=256;gbC.height=384;var gbTx=new THREE.CanvasTexture(gbC);
+var steleG=new THREE.Group(),steleM=new THREE.Mesh(new THREE.BoxGeometry(1.9,2.9,.4),new THREE.MeshLambertMaterial({color:0x39425f})),steleP=new THREE.Mesh(new THREE.PlaneGeometry(1.6,2.4),new THREE.MeshBasicMaterial({map:gbTx}));
+steleM.position.y=1.45;steleP.position.set(0,1.45,.21);steleG.add(steleM);steleG.add(steleP);steleG.position.set(-4.4,0,5.2);steleG.rotation.y=.35;scene.add(steleG);
+var steleGl=sprite(gW,4.2,0xffd88a);steleGl.position.set(-4.4,1.6,5.5);steleGl.material.opacity=.35;scene.add(steleGl);
+steleM.userData.guest=1;steleP.userData.guest=1;pick.push(steleM,steleP);
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function drawStele(){var g=gbC.getContext('2d');g.fillStyle='#2b3350';g.fillRect(0,0,256,384);g.strokeStyle='rgba(255,216,138,.8)';g.lineWidth=3;g.strokeRect(8,8,240,368);g.textAlign='center';g.fillStyle='#ffd88a';g.font='bold 24px sans-serif';g.fillText('📜 키위 방명록',128,44);
+ var L=gbMsgs.slice(-6).reverse();g.textAlign='left';for(var i=0;i<L.length;i++){var y=84+i*52;g.fillStyle='#fff';g.font='bold 19px sans-serif';g.fillText(L[i].t,22,y,214);g.fillStyle='#a4cf3f';g.font='13px sans-serif';g.fillText(L[i].n,22,y+19,214);}
+ if(!L.length){g.fillStyle='#cfd6ff';g.font='16px sans-serif';g.textAlign='center';g.fillText('첫 글을 남겨 보세요',128,200);}gbTx.needsUpdate=true;}
+drawStele();
+function startGB(){if(gbRef||!db)return;gbRef=db.ref('guestbook');gbRef.limitToLast(30).on('child_added',function(sn){var v=sn.val();if(!v||gbKeys[sn.key]||typeof v.t!=='string'||!okText(v.t))return;gbKeys[sn.key]=1;gbMsgs.push({t:v.t.slice(0,20),n:String(v.n||'키위').slice(0,14),at:+v.at||0});gbMsgs.sort(function(a,b){return a.at-b.at;});if(gbMsgs.length>30)gbMsgs.shift();drawStele();renderGB();});}
+function gbLeft(){var d=new Date().toDateString(),o={d:d,n:0};try{var r=JSON.parse(localStorage.getItem('kiwi_gb')||'null');if(r&&r.d===d)o=r;}catch(e){}return o;}
+function renderGB(){var el=document.getElementById('gbl');if(!el)return;var h='';gbMsgs.slice().reverse().forEach(function(m){h+='<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1)"><div style="color:#fff;font-size:15px">'+esc(m.t)+'</div><div style="color:#a4cf3f;font-size:12px">'+esc(m.n)+'</div></div>';});el.innerHTML=h||'<p>아직 글이 없어요. 첫 글을 남겨 보세요 🥝</p>';}
+function guestbook(){var o=gbLeft();modal('<h3>📜 키위 방명록</h3><p>밍이에게, 키위들에게 한 줄을 남겨요. (하루 3번 · 20자)</p><input id="gbt" maxlength="20" placeholder="한 줄 남기기"><button class="btn" id="gbk">남기기 ✨</button><div id="gbl" style="max-height:34vh;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>');renderGB();
+ document.getElementById('gbk').onclick=function(){var ip=document.getElementById('gbt'),t=ip.value.trim();if(!t)return;if(!okText(t)){ip.value='';ip.placeholder='이 표현은 남길 수 없어요';return;}if(!gbRef){ip.value='';ip.placeholder='혼자 둘러보기 중에는 남길 수 없어요';return;}var c=gbLeft();if(c.n>=3){ip.value='';ip.placeholder='오늘은 3번 다 남겼어요. 내일 또 만나요 🥝';return;}
+  gbRef.push({n:myName.slice(0,14),t:t.slice(0,20),at:firebase.database.ServerValue.TIMESTAMP}).then(function(){c.n++;try{localStorage.setItem('kiwi_gb',JSON.stringify(c));}catch(e){}}).catch(function(){ip.placeholder='남기지 못했어요. 잠시 후 다시 시도해요';});ip.value='';ip.placeholder='남겼어요! 💚';};}
+document.getElementById('bGuest').onclick=guestbook;
 /* 포토부스 */
 var phOn=false,phFr=0,phBlob=null,phUrl=null,PHN=['달빛','키위','없음'];
 function setPhoto(on){phOn=on;document.body.classList.toggle('ph',on);document.getElementById('phb').classList.toggle('hide',!on);document.getElementById('phh').classList.toggle('hide',!on);if(on){setGalaxy(false);}else{emoEl.classList.add('hide');}}
@@ -484,11 +502,13 @@ document.getElementById('phP').onclick=function(){emoEl.classList.toggle('hide')
 var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
 fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,FR.length);fs.forEach(function(f,i){new THREE.TextureLoader().load(URL.createObjectURL(f),function(t){setImg(FR[i],t);});});};
 /* 오디오 */
-var ac,master,sfx,bgm=false,dance=false,vid=false,arp;
-function initA(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);sfx=ac.createGain();sfx.gain.value=.9;sfx.connect(ac.destination);var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;lp.connect(master);[110,164.8,220,277.2].forEach(function(f,i){var o=ac.createOscillator();o.type=i%2?'sine':'triangle';o.frequency.value=f;o.detune.value=(i-1.5)*6;var g=ac.createGain();g.gain.value=.12;o.connect(g);g.connect(lp);o.start();});}
+var ac,master,sfx,bgm=false,dance=false,vid=false,arp,bgLp,bgDr=[],zBg=-1,zMs=700;
+function initA(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);sfx=ac.createGain();sfx.gain.value=.9;sfx.connect(ac.destination);var lp=bgLp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;lp.connect(master);[110,164.8,220,277.2].forEach(function(f,i){var o=ac.createOscillator();o.type=i%2?'sine':'triangle';o.frequency.value=f;o.detune.value=(i-1.5)*6;var g=ac.createGain();g.gain.value=.12;o.connect(g);g.connect(lp);o.start();bgDr.push(o);});zBg=-1;}
 function pluck(f){if(!ac||(!bgm&&!dance&&!gxOn))return;var o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(.18,ac.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+1.4);o.connect(g);g.connect(sfx);o.start();o.stop(ac.currentTime+1.5);}
 var N=[440,494,554,659,740,880];
-function arpStart(){clearInterval(arp);arp=setInterval(function(){if((bgm||dance||gxOn)&&!vid&&Math.random()<(dance?.9:gxOn?.7:.35))pluck(N[Math.floor(Math.random()*6)]);},dance?260:gxOn?380:700);}
+var ZB=[{d:[110,164.8,220,277.2],n:[440,494,554,659,740,880],lp:700,ms:700},{d:[130.8,196,261.6,329.6],n:[523,587,659,784,880,1047],lp:1100,ms:950},{d:[98,146.8,196,233.1],n:[294,330,349,440,466,587],lp:480,ms:1100}];
+function applyZoneBgm(n){zBg=n;var z=ZB[n]||ZB[0];for(var i=0;i<6;i++)N[i]=z.n[i];zMs=z.ms;if(ac){var t=ac.currentTime;bgDr.forEach(function(o,i){o.frequency.setTargetAtTime(z.d[i],t,1.2);});if(bgLp)bgLp.frequency.setTargetAtTime(z.lp,t,1.2);}arpStart();}
+function arpStart(){clearInterval(arp);arp=setInterval(function(){if((bgm||dance||gxOn)&&!vid&&Math.random()<(dance?.9:gxOn?.7:.35))pluck(N[Math.floor(Math.random()*6)]);},dance?260:gxOn?380:zMs);}
 function setBgm(on){bgm=on;if(on){if(!ac)initA();ac.resume();}if(ac)master.gain.setTargetAtTime(on?.55:0,ac.currentTime,.5);document.getElementById('bBgm').textContent=on?'🔊':'🔇';arpStart();}
 document.getElementById('bBgm').onclick=function(){setBgm(!bgm);};
 function toggleDance(force){dance=(force===true||force===false)?force:!dance;document.getElementById('bDance').classList.toggle('on',dance);if(dance){if(!ac)initA();ac.resume();}arpStart();}
@@ -543,7 +563,7 @@ if(zone==2){for(var j=0;j<strs.length;j++)strs[j].rotation.z=Math.sin(T*.8+j)*.0
 for(var h=hearts.length-1;h>=0;h--){var q=hearts[h];q.t+=dt;if(q.t<0)continue;q.s.position.y+=dt*1.1;q.s.position.x+=Math.sin(q.t*4+h)*.01;q.s.material.opacity=Math.max(0,1-q.t/1.8);if(q.t>1.8){scene.remove(q.s);q.s.material.dispose();hearts.splice(h,1);}}
 netT+=dt;if(meRef&&netT>.2){netT=0;var sk=r2(av.position.x)+','+r2(av.position.z)+','+r2(av.rotation.y)+','+zone;if(sk!==lastKey){lastKey=sk;sendMe(false);}}
 for(var id in remotes){var r=remotes[id],dx2=r.tx-r.g.position.x,dz2=r.tz-r.g.position.z,dd2=Math.hypot(dx2,dz2);r.g.position.x+=dx2*Math.min(1,dt*8);r.g.position.z+=dz2*Math.min(1,dt*8);var gy2=r.zn?.4:(r.tz<-10?.72:.1);r.w=dd2>.05?r.w+dt*7:0;var df2=((r.ry-r.g.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;r.g.rotation.y+=df2*Math.min(1,dt*10);var jp2=0;if(r.jump>0){r.jump-=dt;jp2=Math.sin((1-Math.max(r.jump,0)/.7)*Math.PI)*.8;}r.g.position.y=gy2+(dd2>.05?Math.abs(Math.sin(r.w))*.08:0)+jp2;var sw=dd2>.05?Math.sin(r.w)*.7:0;r.legL.rotation.x=sw;r.legR.rotation.x=-sw;r.armL.rotation.x=sw*.8;r.armR.rotation.x=-sw*.8;var aL=-.65,aR=.65;if(r.jump>0){aL=-2.6;aR=2.6;}if(r.act=='wave'){r.actT+=dt;aR=2.3+Math.sin(r.actT*14)*.35;if(r.actT>2)r.act=null;}else if(r.act=='heart'){r.actT+=dt;aL=-2.4;aR=2.4;if(r.actT>1.4)r.act=null;}r.armL.rotation.z=aL;r.armR.rotation.z=aR;r.g.visible=(r.zn===zone);}
-gxUpdate(dt);tickBub(av,dt);for(var id3 in remotes)tickBub(remotes[id3].g,dt);moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
+if(zBg!==zone)applyZoneBgm(zone);gxUpdate(dt);tickBub(av,dt);for(var id3 in remotes)tickBub(remotes[id3].g,dt);moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
 addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 var intro=document.getElementById('intro'),pbar=document.getElementById('pbar'),ptxt=document.getElementById('ptxt'),goBtn=document.getElementById('go'),sndB=document.getElementById('snd'),snd=false,ready=false,t0=Date.now();
 function doneLoad(){if(ready)return;ready=true;setTimeout(function(){pbar.style.width='100%';ptxt.textContent='준비 완료';goBtn.disabled=false;goBtn.textContent='입장하기';},Math.max(0,900-(Date.now()-t0)));}
