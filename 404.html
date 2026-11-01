@@ -366,7 +366,7 @@ if(f.gal&&f.k!='dance'){modal('<h3>'+f.t+'</h3>'+galHTML(f)+'<p>'+(f.d||'')+'</p
 var yi=f.k!='dance'&&f.l&&ytInfo(f.l[0]);if(yi&&(f.ok||f.e)){if(f.s0)yi.t=f.s0;if(f.e)yi.e=f.e;vidOn();return modal('<h3>'+f.t+'</h3>'+ytHTML(yi)+'<p>'+(f.d||'')+'</p><a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>');}
 if(f.k=='dance'){vid=true;toggleDance(true);setBgm(false);modal('<h3>소시구 A반 칼군무</h3><video id="dv" src="'+assetBase+'sosigu_a_dance.mp4" playsinline controls autoplay style="width:100%;max-height:58vh;border-radius:12px;margin-bottom:10px;background:#000"></video><a href="'+f.l[0]+'" target="_blank" rel="noopener">스레드 원본 보기</a>');return;}var h='<h3>'+f.t+'</h3><p>'+(f.d||'키위 모두 함께 추는 소시구 A반 칼군무 연회! 조명과 음악이 축제 모드로 바뀌었어요.')+'</p>';if(f.l)h+='<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>';modal(h);}
 function bday(){
-  var bF = { t: '0803 생일 소원 라운지', gal: ['birthday_candle_cake_gaze.jpg', 'birthday_wish_favorite.jpg'] };
+  var bF = { t: '0803 생일 소원 라운지', gal: ['birthday_candle_cake_gaze.jpg', 'birthday_kiwi_cake_peace.jpg', 'birthday_van_bouquet_cake.jpg', 'birthday_wish_favorite.jpg'] };
   modal('<h3>🎂 0803 생일 소원 라운지</h3>' + galHTML(bF) + '<p>촛불 켠 케이크 앞에서, 밍이에게 건네고 싶은 생일 소원을 빌어 보세요.</p><button class="btn" id="mk" style="margin-top:6px">생일 소원 빌기 ✨</button>');
   galInit(bF);
   document.getElementById('mk').onclick = function(){
