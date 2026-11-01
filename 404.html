@@ -92,8 +92,7 @@ var rim=new THREE.Mesh(new THREE.BoxGeometry(36.4,.12,8.4),new THREE.MeshBasicMa
 function card(t,s,c1,c2){var c=document.createElement('canvas');c.width=384;c.height=512;var g=c.getContext('2d'),gr=g.createLinearGradient(0,0,384,512);gr.addColorStop(0,c1);gr.addColorStop(1,c2);g.fillStyle=gr;g.fillRect(0,0,384,512);g.textAlign='center';g.fillStyle='rgba(255,255,255,.92)';g.font='60px sans-serif';g.fillText('✦',192,160);g.font='bold 42px sans-serif';g.fillText(t,192,250);g.font='26px sans-serif';g.fillStyle='rgba(255,255,255,.7)';g.fillText(s,192,300);g.fillText('사진 넣기로 교체',192,470);return new THREE.CanvasTexture(c);}
 var FR=[
 {t:'난징 페스티벌',s:'루프탑 메인 스테이지',c1:'#ff5a5a',c2:'#1a1040',img:'rooftop_live_main.jpg',k:'info',s0:0,e:900,d:'10월 난징 페스티벌 붉은 헤어 록스타 무대. Galaxy Far Far Away 라이브 15분 하이라이트 구간이에요. (영상 원저자: 밍트리)',l:['https://youtu.be/H7XPlifZA8Y','원저자 밍트리 영상 페이지']},
-{t:'키위 카페',s:'별 글리터',c1:'#7fe0c0',c2:'#2a3a7a',img:'star_glitter_casual.jpg',k:'info',gal:['star_glitter_casual.jpg','nanjing_blue_headband.jpg'],d:'볼과 콧등에 별 글리터를 붙인 청량 소년미 컷, 키위 카페 포토카드 스탠드예요.'},
-{t:'천년 연화지',s:'수련 포스터',c1:'#ff9ab0',c2:'#1b3a4a',img:'da_meng_gui_li_shirtless_lotus_pond_official_poster.jpg',k:'info',gal:['da_meng_gui_li_shirtless_lotus_pond_official_poster.jpg'],d:'수련 꽃과 붉은 잉어가 노니는 연화지의 공식 포스터예요.'},
+{t:'키위 카페',s:'키위 인형 · 소년미',c1:'#7fe0c0',c2:'#2a3a7a',img:'kiwi_doll_hug.jpg',k:'info',gal:['kiwi_doll_hug.jpg','glasses_white_knit_dolls.jpg','star_glitter_casual.jpg','nanjing_blue_headband.jpg','blonde_wink_modern.jpg','white_suit_fairy.jpg'],d:'키위 인형을 꼭 안은 밍이와 안경 니트 인형 품 컷, 별 글리터 등 상큼 청량 소년미 포토카드 컬렉션이에요.'},
 {t:'0803 생일 소원',s:'바이크 케이크',c1:'#ff9a6b',c2:'#6b2a7a',img:'birthday_wish_favorite.jpg',k:'bday'},
 {t:'我是妖',s:'지우산 웰컴',c1:'#ff5a7a',c2:'#1a1a4a',img:'da_meng_gui_li_not_human_im_demon_entrance.jpg',k:'info',gal:['da_meng_gui_li_not_human_im_demon_entrance.jpg','da_meng_gui_li_umbrella_side_profile.jpg','da_meng_gui_li_official_character_poster.jpg'],d:'비 내리는 밤안개 속, 붉은 방울 지우산을 들어 올리며 "나는 요괴다(我是妖)"라고 선언하는 대요괴 주염의 레전드 첫 등장 명장면이에요.'},
 {t:'34화 13:02',s:'조원주의 마지막 미소',c1:'#6aa8ff',c2:'#1b2552',img:'da_meng_gui_li_zhao_yuanzhou_death_scene_hd_clean.png',k:'info',s0:782,e:842,d:'대몽귀리 34화 조원주 희생 클라이맥스 씬이에요. 13:02 하이라이트 구간만 재생돼요.',l:['https://youtu.be/dqoW245X3X4?t=782','아이치이 공식 영상 페이지']},
@@ -287,7 +286,12 @@ function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamer
 /* 모달 */
 var md=document.getElementById('modal'),mb=document.getElementById('mb');
 function modal(h){mb.innerHTML=h;md.classList.remove('hide');}
-function closeM(){md.classList.add('hide');mb.innerHTML='';if(vid){vid=false;toggleDance(false);}}
+function closeM(){
+  if(galTimer){ clearInterval(galTimer); galTimer = null; }
+  md.classList.add('hide');
+  mb.innerHTML = '';
+  if(vid){ vid = false; toggleDance(false); }
+}
 document.getElementById('mx').onclick=closeM;
 function ytInfo(u){
   u = String(u || '');
@@ -318,15 +322,73 @@ function ytHTML(i,cropMode){
     '</div>';
 }
 function vidOn(){if(bgm)setBgm(false);vid=true;}
-function galHTML(f){var n=f.gal.length;return '<div style="position:relative;margin-bottom:10px"><img id="gi" src="'+assetBase+encodeURI(f.gal[0])+'" style="width:100%;max-height:50vh;object-fit:contain;border-radius:12px;background:rgba(0,0,0,.35);display:block">'+(n>1?'<button id="gp" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:20px">‹</button><button id="gn" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:20px">›</button><div id="gc" style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:12px;color:#fff;text-shadow:0 1px 4px #000">1 / '+n+'</div>':'')+'</div>';}
-function galInit(f){var i=0,n=f.gal.length,im=document.getElementById('gi');if(!im||n<2)return;function go(d){i=(i+d+n)%n;im.src=assetBase+encodeURI(f.gal[i]);document.getElementById('gc').textContent=(i+1)+' / '+n;}document.getElementById('gp').onclick=function(){go(-1);};document.getElementById('gn').onclick=function(){go(1);};}
+var galTimer = null;
+function galHTML(f){
+  var n = f.gal.length;
+  return '<div style="position:relative;margin-bottom:10px;overflow:hidden;border-radius:12px;background:rgba(0,0,0,.35)">' +
+    '<img id="gi" src="' + assetBase + encodeURI(f.gal[0]) + '" style="width:100%;max-height:50vh;object-fit:contain;border-radius:12px;display:block;transition:opacity .35s ease">' +
+    (n > 1 ? '<div style="position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:10px;background:rgba(0,0,0,.6);font-size:11px;color:#ffd88a;letter-spacing:-.2px;backdrop-filter:blur(4px)">⏱ 자동 넘김</div>' +
+             '<button id="gp" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;z-index:2">‹</button>' +
+             '<button id="gn" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;z-index:2">›</button>' +
+             '<div id="gc" style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:12px;color:#fff;text-shadow:0 1px 4px #000">1 / ' + n + '</div>' : '') +
+  '</div>';
+}
+function galInit(f){
+  if(galTimer){ clearInterval(galTimer); galTimer = null; }
+  var i = 0, n = f.gal.length, im = document.getElementById('gi');
+  if(!im || n < 2) return;
+  function show(idx){
+    im.style.opacity = '0';
+    setTimeout(function(){
+      i = (idx + n) % n;
+      im.src = assetBase + encodeURI(f.gal[i]);
+      im.onload = function(){ im.style.opacity = '1'; };
+      var gc = document.getElementById('gc');
+      if(gc) gc.textContent = (i + 1) + ' / ' + n;
+    }, 220);
+  }
+  function next(){ show(i + 1); }
+  function prev(){ show(i - 1); }
+  function resetTimer(){
+    if(galTimer) clearInterval(galTimer);
+    galTimer = setInterval(next, 2600);
+  }
+  var gp = document.getElementById('gp');
+  var gn = document.getElementById('gn');
+  if(gp) gp.onclick = function(e){ e.stopPropagation(); prev(); resetTimer(); };
+  if(gn) gn.onclick = function(e){ e.stopPropagation(); next(); resetTimer(); };
+  resetTimer();
+}
 window.openFrame = openFrame; window.FR = FR; function openFrame(f){if(f.k=='bday')return bday();
 if(f.k!='dance'&&f.v){var yi0=f.l&&ytInfo(f.l[0]);if(yi0){if(f.s0)yi0.t=f.s0;if(f.e)yi0.e=f.e;}var okY=yi0&&(f.ok||f.e);vidOn();modal('<h3>'+f.t+'</h3><div id="cvb"><video id="cv" src="'+assetBase+f.v+'" playsinline controls autoplay style="width:100%;max-height:52vh;border-radius:12px;margin-bottom:10px;background:#000"></video></div><p>'+(f.d||'')+'</p>'+(f.l?'<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>':''));document.getElementById('cv').addEventListener('error',function(){var bx=document.getElementById('cvb');if(bx)bx.innerHTML=okY?ytHTML(yi0):'<div style="padding:22px 12px;text-align:center;border-radius:12px;background:rgba(255,255,255,.07);margin-bottom:10px;color:var(--sub);font-size:14px">🎬 이 장면의 편집 영상을 준비하고 있어요</div>';});return;}
 if(f.gal&&f.k!='dance'){modal('<h3>'+f.t+'</h3>'+galHTML(f)+'<p>'+(f.d||'')+'</p>'+(f.l?'<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>':''));galInit(f);return;}
 var yi=f.k!='dance'&&f.l&&ytInfo(f.l[0]);if(yi&&(f.ok||f.e)){if(f.s0)yi.t=f.s0;if(f.e)yi.e=f.e;vidOn();return modal('<h3>'+f.t+'</h3>'+ytHTML(yi)+'<p>'+(f.d||'')+'</p><a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>');}
 if(f.k=='dance'){vid=true;toggleDance(true);setBgm(false);modal('<h3>소시구 A반 칼군무</h3><video id="dv" src="'+assetBase+'sosigu_a_dance.mp4" playsinline controls autoplay style="width:100%;max-height:58vh;border-radius:12px;margin-bottom:10px;background:#000"></video><a href="'+f.l[0]+'" target="_blank" rel="noopener">스레드 원본 보기</a>');return;}var h='<h3>'+f.t+'</h3><p>'+(f.d||'키위 모두 함께 추는 소시구 A반 칼군무 연회! 조명과 음악이 축제 모드로 바뀌었어요.')+'</p>';if(f.l)h+='<a href="'+f.l[0]+'" target="_blank" rel="noopener">'+f.l[1]+'</a>';modal(h);}
 function bday(){modal('<h3>🎂 0803 생일 소원 라운지</h3><p>바이크 피규어가 얹힌 별빛 케이크 앞에서, 밍이에게 건네고 싶은 소원을 빌어 보세요.</p><button class="btn" id="mk">소원 빌기 ✨</button>');document.getElementById('mk').onclick=function(){party();mb.innerHTML='<h3>🎉 생일 축하해요, 밍이!</h3><p>키위 모두의 소원이 밤하늘로 올라갔어요.</p>';};}
-function wish(){modal('<h3>🪷 소원 연꽃등</h3><p>소원을 적으면 불 켜진 연꽃등이 연화지 호수로 떠올라요. 다시 들어와도 내 소원등이 남아 있고, 같은 방 키위들에게도 24시간 동안 보여요.</p><input id="wt" maxlength="12" placeholder="소원 한 줄 (12자)"><button class="btn" id="wk">띄우기</button>');document.getElementById('wk').onclick=function(){var t=document.getElementById('wt').value.trim();if(!t)return;var g=lantern(t,(Math.random()<.5?-1:1)*(5.8+Math.random()*3.5),clampZ(av.position.z+1.5));g.userData.new=1;document.getElementById('lc').textContent='🪷 '+(++wn);saveL(t,g.position.x,g.position.z);burst(g.position.x,1.5,g.position.z,0xffb36b);if(shareL(t,g.position.x,g.position.z))closeM();else modal('<h3>🪷 소원등을 띄웠어요</h3><p>이 문구는 다른 키위에게는 보이지 않고, 나만 볼 수 있어요.</p>');};}
+function wish(){
+  modal('<h3>🪷 소원 연꽃등</h3><p>소원을 적으면 불 켜진 연꽃등이 은빛 밤하늘로 둥실 떠올라 달과 별 사이를 수놓아요. 다시 들어와도 내 소원등이 남아 있고, 같은 방 키위들에게도 24시간 동안 보여요.</p><input id="wt" maxlength="12" placeholder="소원 한 줄 (12자)"><button class="btn" id="wk">하늘로 띄우기 ✨</button>');
+  document.getElementById('wk').onclick = function(){
+    var t = document.getElementById('wt').value.trim();
+    if(!t) return;
+    closeM();
+    var sx = av.position.x + (Math.random() - .5) * 1.2;
+    var sz = av.position.z - 1.2;
+    var g = lantern(t, sx, sz);
+    g.userData.new = 1;
+    document.getElementById('lc').textContent = '🪷 ' + (++wn);
+    saveL(t, sx, sz);
+    shareL(t, sx, sz);
+    var lObj = lanterns[lanterns.length - 1];
+    lObj.ascend = true;
+    lObj.y = 0.35;
+    g.position.y = 0.35;
+    burst(sx, 1.2, sz, 0xffd88a);
+    burst(sx, 2.0, sz, 0xff8ad8);
+    if(ac && (bgm || dance)){ pluck(880); setTimeout(function(){ pluck(1100); }, 220); }
+    emote = 1.2;
+    bubble(av, '소원이 하늘로 올라가요 ✨');
+  };
+}
 document.getElementById('bWish').onclick=wish;document.getElementById('bBday').onclick=bday;
 /* 사진 교체 */
 var fi=document.getElementById('file');document.getElementById('bPhoto').onclick=function(){fi.click();};
@@ -345,7 +407,39 @@ document.getElementById('bDance').onclick=function(){toggleDance();};
 var clk=new THREE.Clock(),T=0;
 function loop(){requestAnimationFrame(loop);var dt=Math.min(clk.getDelta(),.05);T+=dt;
 var p=lakeG.attributes.position.array;for(var i=0;i<p.length;i+=3){p[i+1]=Math.sin(base[i]*.2+T*.9)*.05+Math.cos(base[i+2]*.25+T*.7)*.05;}lakeG.attributes.position.needsUpdate=true;lakeG.computeVertexNormals();
-lanterns.forEach(function(l){var g=l.g;g.position.x+=l.vx*dt;g.position.z+=l.vz*dt;g.position.y=-.08+Math.sin(T*1.2+l.ph)*.05;if(g.position.z<-9){g.position.z=9;}if(Math.abs(g.position.x)>20)l.vx*=-1;if(Math.abs(g.position.x)<5.4){var sg=g.position.x<0?-1:1;g.position.x=sg*5.4;l.vx=sg*(Math.abs(l.vx)+.05);}});
+lanterns.forEach(function(l){
+  var g = l.g;
+  if(l.ascend){
+    l.y = (l.y || g.position.y);
+    if(l.y < 15){
+      l.y += dt * 1.7;
+      g.position.y = l.y + Math.sin(T * 2.2 + l.ph) * 0.12;
+      g.position.x += Math.sin(T * 0.7 + l.ph) * dt * 0.5;
+      g.position.z -= dt * 0.75;
+      g.rotation.y += dt * 0.35;
+      l.sparkT = (l.sparkT || 0) + dt;
+      if(l.sparkT > 0.38 && l.y < 13){
+        l.sparkT = 0;
+        burst(g.position.x, g.position.y - 0.25, g.position.z, 0xffd88a);
+      }
+    } else {
+      g.position.y = 15 + Math.sin(T * 0.8 + l.ph) * 0.35;
+      g.position.x += Math.sin(T * 0.4 + l.ph) * dt * 0.25;
+      g.rotation.y += dt * 0.12;
+    }
+    return;
+  }
+  g.position.x += l.vx * dt;
+  g.position.z += l.vz * dt;
+  g.position.y = -.08 + Math.sin(T * 1.2 + l.ph) * .05;
+  if(g.position.z < -9){ g.position.z = 9; }
+  if(Math.abs(g.position.x) > 20) l.vx *= -1;
+  if(Math.abs(g.position.x) < 5.4){
+    var sg = g.position.x < 0 ? -1 : 1;
+    g.position.x = sg * 5.4;
+    l.vx = sg * (Math.abs(l.vx) + .05);
+  }
+});
 dancers.forEach(function(d,i){d.position.y=.72+(dance?Math.abs(Math.sin(T*6+i))*.9:Math.sin(T*1.5+i)*.05);d.rotation.y=dance?Math.sin(T*3+i)*.8:0;});
 FR.forEach(function(f,i){f.grp.scale.setScalar(dance?1+Math.sin(T*6+i)*.04:1);});
 disco.color.setHSL(dance?(T*.4)%1:.9,.9,.6);disco.intensity=dance?1.6:.5;
