@@ -289,7 +289,13 @@ var md=document.getElementById('modal'),mb=document.getElementById('mb');
 function modal(h){mb.innerHTML=h;md.classList.remove('hide');}
 function closeM(){md.classList.add('hide');mb.innerHTML='';if(vid){vid=false;toggleDance(false);}}
 document.getElementById('mx').onclick=closeM;
-function ytInfo(u){var m=String(u).match(/(?:youtu\.be\/|youtube\.com\/shorts\/|[?&]v=)([\w-]{11})/);if(!m)return null;var t=String(u).match(/[?&]t=(\d+)/);return {id:m[1],t:t?+t[1]:0,sh:\/\/shorts\/\/.test(u)};}
+function ytInfo(u){
+  u = String(u || '');
+  var m = u.match(/(?:youtu\.be\/|youtube\.com\/shorts\/|[?&]v=)([a-zA-Z0-9_-]{11})/);
+  if(!m) return null;
+  var t = u.match(/[?&]t=(\d+)/);
+  return { id: m[1], t: t ? parseInt(t[1], 10) : 0, sh: (u.indexOf('/shorts/') >= 0) };
+}
 function ytHTML(i,cropMode){
   var st=(i.t?'&start='+i.t:'')+(i.e?'&end='+i.e:'')+'&cc_load_policy=0&iv_load_policy=3&modestbranding=1&rel=0&playsinline=1';
   var src='https://www.youtube.com/embed/'+i.id+'?autoplay=1'+st;
