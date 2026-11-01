@@ -30,7 +30,7 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .pill{display:flex;align-items:center;gap:2px;border-radius:26px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .hud{z-index:2;position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;justify-content:space-between;align-items:center;pointer-events:none}
 .hud .pill{height:46px;padding:0 16px;gap:10px;font-size:14px;font-weight:600;pointer-events:auto}
-.hud .pill span{white-space:nowrap}#tt{overflow:hidden;text-overflow:ellipsis;max-width:46vw}.hud button{background:none;border:0;color:inherit;font-size:19px;padding:6px 4px}
+.hud .pill span{white-space:nowrap}#tt{overflow:hidden;text-overflow:ellipsis;max-width:46vw}.zc{z-index:10;position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 66px);max-width:60vw;font-size:11px;line-height:1.4;color:rgba(255,255,255,.85);text-shadow:0 1px 6px #000;pointer-events:none;display:none}body.ph .zc{display:none!important}.hud button{background:none;border:0;color:inherit;font-size:19px;padding:6px 4px}
 .bar{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:8px 10px}
 .bar button,.emo button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 9px;border-radius:18px;min-width:46px}
 .bar button.pulse{animation:pl 1s infinite}@keyframes pl{50%{background:rgba(164,207,63,.45)}}.bar button i,.emo button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
@@ -45,6 +45,7 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 </style></head><body>
 <div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bGuest">📜</button><button id="bShot">📸</button><button id="bPhoto">🖼</button></div></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
+<div class="zc" id="zc">🎨 치비 일러스트: 원작 팬 아티스트의 작품이에요</div>
 <div class="bar pill"><button id="bWish"><i>🪷</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bGx"><i>🌌</i>떼창</button><button id="bAct"><i>🙌</i>동작</button></div>
 <div class="phh hide" id="phh">구도를 잡고 📸를 눌러요 · 눌러서 이동할 수 있어요</div><div class="pill phb hide" id="phb"><button id="phF"><i>🖼</i><span id="phFn">달빛</span></button><button id="phK">📸</button><button id="phP"><i>🙌</i>포즈</button><button id="phX"><i>✖</i>닫기</button></div>
 <div class="pill emo gxp hide" id="gxp"><span id="gxn">🌌 떼창</span><button id="gxS"><i>💚</i>외치기</button><button id="gxL"><i>🎵</i>라이브</button><button id="gxX"><i>✖</i>끝내기</button></div>
@@ -204,7 +205,12 @@ function cloud(x,y,z,sz,o){var c=new THREE.Sprite(new THREE.SpriteMaterial({map:
 for(var i=0;i<80;i++){var a=Math.random()*6.283,r=9+Math.random()*55;cloud(Math.cos(a)*r,-1.8+Math.random()*2,Math.sin(a)*r-6,12+Math.random()*10,.55);}
 for(var i=0;i<14;i++){var a=Math.random()*6.283,r=40+Math.random()*30;cloud(Math.cos(a)*r,8+Math.random()*10,Math.sin(a)*r-6,22+Math.random()*12,.28);}
 var stone=new THREE.MeshPhongMaterial({color:0xd8cfc2,emissive:0x2a2620}),redM=new THREE.MeshPhongMaterial({color:0xb0342f,emissive:0x2a0808}),goldM=new THREE.MeshBasicMaterial({color:0xffd88a}),roofM=new THREE.MeshPhongMaterial({color:0x2a2f60,emissive:0x0c1030});
-var plat=new THREE.Mesh(new THREE.CylinderGeometry(7,7.6,.8,32),stone);zoneD.add(plat);
+var tlc=document.createElement('canvas');tlc.width=tlc.height=128;var tlg=tlc.getContext('2d');tlg.fillStyle='#cdc5b8';tlg.fillRect(0,0,128,128);tlg.strokeStyle='#9d9588';tlg.lineWidth=3;tlg.strokeRect(0,0,128,128);tlg.beginPath();tlg.moveTo(64,0);tlg.lineTo(64,128);tlg.moveTo(0,64);tlg.lineTo(128,64);tlg.stroke();
+var tlT=new THREE.CanvasTexture(tlc);tlT.wrapS=tlT.wrapT=THREE.RepeatWrapping;tlT.repeat.set(5,5);
+var tileS=new THREE.MeshPhongMaterial({map:tlT,color:0xe8e2d6,emissive:0x15130f});
+var stA=new THREE.Mesh(new THREE.CylinderGeometry(8.5,8.7,.8,48),new THREE.MeshPhongMaterial({color:0x8d877e,emissive:0x0e0d0b}));stA.position.y=-.27;zoneD.add(stA);
+var stB=new THREE.Mesh(new THREE.CylinderGeometry(7.7,7.9,.8,48),new THREE.MeshPhongMaterial({color:0xaaa397,emissive:0x100f0c}));stB.position.y=-.14;zoneD.add(stB);
+var plat=new THREE.Mesh(new THREE.CylinderGeometry(7,7.1,.8,48),tileS);zoneD.add(plat);
 var prg=new THREE.Mesh(new THREE.TorusGeometry(7.2,.1,6,48),goldM);prg.rotation.x=Math.PI/2;prg.position.y=.42;zoneD.add(prg);
 var colL=[];[[-3.2,-3.2],[3.2,-3.2],[-3.2,3.2],[3.2,3.2]].forEach(function(p){var c=new THREE.Mesh(new THREE.CylinderGeometry(.3,.34,10,10),redM);c.position.set(p[0],5.5,p[1]);zoneD.add(c);var l=new THREE.Mesh(new THREE.SphereGeometry(.3,10,8),new THREE.MeshBasicMaterial({color:0xff6a4a}));l.position.set(p[0]*.8,4.2,p[1]*.8);zoneD.add(l);colL.push(l);var lg=sprite(gO,3);lg.position.copy(l.position);zoneD.add(lg);});
 var tileT=(function(){var k=document.createElement('canvas');k.width=k.height=256;var g=k.getContext('2d');g.fillStyle='#5b616a';g.fillRect(0,0,256,256);for(var r=-1;r<9;r++){for(var c=-1;c<9;c++){var x=c*32+(r%2?16:0),y=r*32;var gr=g.createLinearGradient(0,y,0,y+40);gr.addColorStop(0,'#848b95');gr.addColorStop(1,'#656b74');g.fillStyle=gr;g.beginPath();g.moveTo(x,y);g.lineTo(x+32,y);g.lineTo(x+32,y+20);g.quadraticCurveTo(x+16,y+44,x,y+20);g.closePath();g.fill();g.strokeStyle='#3f444b';g.lineWidth=2;g.stroke();}}var t=new THREE.CanvasTexture(k);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;})();
@@ -213,8 +219,10 @@ var rf=new THREE.Mesh(new THREE.ConeGeometry(6.6,2.4,4),tileM1);rf.rotation.y=Ma
 var rf2=new THREE.Mesh(new THREE.ConeGeometry(4,1.8,4),tileM2);rf2.rotation.y=Math.PI/4;rf2.position.y=13.5;zoneD.add(rf2);
 var trim=new THREE.Mesh(new THREE.TorusGeometry(6.6,.14,6,4),goldM);trim.rotation.set(Math.PI/2,0,Math.PI/4);trim.position.y=10.55;zoneD.add(trim);
 var fin=new THREE.Mesh(new THREE.SphereGeometry(.28,10,8),goldM);fin.position.y=14.8;zoneD.add(fin);
-var th=new THREE.Group(),plin=new THREE.Mesh(new THREE.BoxGeometry(2.2,.8,1.8),redM),seat=new THREE.Mesh(new THREE.BoxGeometry(2,.5,1.6),redM),bk=new THREE.Mesh(new THREE.BoxGeometry(2,2.6,.3),redM),tr=new THREE.Mesh(new THREE.BoxGeometry(2.3,.15,.45),goldM);
-plin.position.y=.4;seat.position.y=1.05;bk.position.set(0,2.35,-.7);tr.position.set(0,3.7,-.7);th.add(plin,seat,bk,tr);th.position.set(0,.4,-2.2);zoneD.add(th);
+var th=new THREE.Group();
+[[6,2.8,0,.11],[4.8,2.2,-.2,.33],[3.6,1.6,-.45,.55]].forEach(function(d){var bx=new THREE.Mesh(new THREE.BoxGeometry(d[0],.22,d[1]),redM);bx.position.set(0,d[3],d[2]);th.add(bx);var ed=new THREE.Mesh(new THREE.BoxGeometry(d[0]+.04,.05,.07),goldM);ed.position.set(0,d[3]+.11,d[2]+d[1]/2);th.add(ed);});
+var seat=new THREE.Mesh(new THREE.BoxGeometry(2,.4,1.2),redM);seat.position.set(0,.86,-.5);var bk=new THREE.Mesh(new THREE.BoxGeometry(2,2.6,.25),redM);bk.position.set(0,1.96,-1);var tr=new THREE.Mesh(new THREE.BoxGeometry(2.4,.15,.4),goldM);tr.position.set(0,3.3,-1);
+th.add(seat,bk,tr);th.position.set(0,.4,-2.2);zoneD.add(th);
 var mkc=document.createElement('canvas');mkc.width=256;mkc.height=320;var mkx=mkc.getContext('2d');
 mkx.fillStyle='#d94a3f';mkx.fillRect(34,206,5,100);mkx.fillRect(217,206,5,100);
 var mkr=mkx.createLinearGradient(0,20,0,250);mkr.addColorStop(0,'#fffaf0');mkr.addColorStop(1,'#d9d0c0');mkx.fillStyle=mkr;mkx.beginPath();mkx.ellipse(128,128,86,112,0,0,6.283);mkx.fill();mkx.strokeStyle='#e0b45a';mkx.lineWidth=7;mkx.stroke();
@@ -258,7 +266,10 @@ mkF({t:'호요소홍랑',s:'황금 체인 군주',img:'fox_spirit_matchmaker_zhu
 [{t:'수정 베일',s:'크리스털 페이스',img:'veil_concept.jpg',k:'info',d:'크리스털 페이스 베일 화보 컷이에요.'},9.5,-4.5,-.6],
 [{t:'여우털 군주',s:'겨울 코트',img:'da_meng_gui_li_winter_fur_robe.jpg',k:'info',d:'하얀 여우털을 두른 겨울 군주 컷이에요.'},-10,1.5,1],
 [{t:'흑색 비단 도포',s:'호요소홍랑 전신',img:'fox_spirit_matchmaker_zhu_ye_full_robe.jpg',k:'info',h:5.6,fa:3/5.6,d:'흑색 비단 도포를 두른 호요소홍랑의 전신 컷이에요. 황금 체인과 함께 군주의 위엄이 느껴져요.'},10,1.5,-1]].forEach(function(d){mkF(d[0],d[1],4.4,d[2],d[3],3,d[0].h||4.1);});
-var strs=[];for(var i=0;i<36;i++){var len=3+Math.random()*6,g=new THREE.Group(),th=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,len,4),new THREE.MeshBasicMaterial({color:0xff2a4a}));th.position.y=-len/2;var bd=new THREE.Mesh(new THREE.SphereGeometry(.07,8,6),skyM);bd.position.y=-len;g.add(th,bd);g.position.set((Math.random()-.5)*28,11,-9+Math.random()*17);zoneE.add(g);strs.push(g);}
+var kmc=document.createElement('canvas');kmc.width=kmc.height=96;var kmg=kmc.getContext('2d');function kmL(cx,cy,rx,ry){[['#7a0f1a',9],['#e0262f',6],['#ff7a7a',2]].forEach(function(q){kmg.strokeStyle=q[0];kmg.lineWidth=q[1];kmg.beginPath();kmg.ellipse(cx,cy,rx,ry,0,0,6.283);kmg.stroke();});}
+kmL(48,26,9,18);kmL(48,70,9,18);kmL(26,48,18,9);kmL(70,48,18,9);[['#7a0f1a',10],['#e0262f',7],['#ff7a7a',2]].forEach(function(q){kmg.strokeStyle=q[0];kmg.lineWidth=q[1];kmg.beginPath();kmg.moveTo(48,38);kmg.lineTo(58,48);kmg.lineTo(48,58);kmg.lineTo(38,48);kmg.closePath();kmg.stroke();});
+var kmT=new THREE.CanvasTexture(kmc);
+var strs=[];for(var i=0;i<36;i++){var len=3+Math.random()*6,g=new THREE.Group(),th=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,len,4),new THREE.MeshBasicMaterial({color:0xff2a4a}));th.position.y=-len/2;var bd=new THREE.Sprite(new THREE.SpriteMaterial({map:kmT,transparent:true,fog:false}));bd.center.set(.5,.92);bd.scale.set(.42,.42,1);bd.position.y=-len;g.add(th,bd);g.position.set((Math.random()-.5)*28,11,-9+Math.random()*17);zoneE.add(g);strs.push(g);}
 var fires=[];for(var i=0;i<8;i++){var ff=sprite(gW,2.8,i%2?0x8a7bff:0x6fd1ff);var an=Math.random()*6.283,rr=5+Math.random()*4;ff.position.set(Math.cos(an)*rr,2+Math.random()*3,Math.sin(an)*rr-1);zoneE.add(ff);fires.push(ff);}
 var orb=new THREE.Group();orb.position.set(0,2.2,-3.2);var og=sprite(gO,3.4,0xff3a5a);orb.add(og);zoneE.add(orb);
 var yc=document.createElement('canvas');yc.width=256;yc.height=192;var yg=yc.getContext('2d');yg.strokeStyle='#e0262f';yg.lineWidth=3;for(var yi=0;yi<46;yi++){yg.beginPath();var yx=128+(Math.random()-.5)*150,yy=96+(Math.random()-.5)*110;yg.moveTo(yx,yy);for(var yk=0;yk<3;yk++)yg.quadraticCurveTo(128+(Math.random()-.5)*210,96+(Math.random()-.5)*160,128+(Math.random()-.5)*180,96+(Math.random()-.5)*130);yg.stroke();}
@@ -332,10 +343,10 @@ function gxCountN(){var n=gxOn?1:0;for(var id in remotes)if(remotes[id].ls)n++;r
 function gxHint(t){hint.textContent=t;hint.style.opacity=1;clearTimeout(gxHT);gxHT=setTimeout(function(){hint.style.opacity=0;},4500);}
 function flyPhrase(text,pos){var c=document.createElement('canvas');c.width=480;c.height=96;var g=c.getContext('2d');g.fillStyle='rgba(8,24,10,.62)';g.strokeStyle='rgba(182,255,74,.9)';g.lineWidth=4;g.beginPath();if(g.roundRect)g.roundRect(6,10,468,76,38);else g.rect(6,10,468,76);g.fill();g.stroke();g.fillStyle='#f4ffe0';g.font='bold 38px sans-serif';g.textAlign='center';g.fillText(text,240,63,430);
 var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,depthTest:false,fog:false,opacity:0}));sp.renderOrder=12;sp.scale.set(3.6,.72,1);sp.position.set(pos.x+(Math.random()-.5)*1.4,pos.y+2.8,pos.z);scene.add(sp);gxFly.push({s:sp,t:0,v:new THREE.Vector3((Math.random()-.5)*1.6,2.3,-2.4)});}
-function gxRemote(r,a){if(a=='gx1')r.ls=true;else if(a=='gx0')r.ls=false;else if(/^gxs\d$/.test(a)&&r.zn===0&&zone===0)flyPhrase(GXP[+a.slice(3)]||GXP[0],r.g.position);}
-function gxShout(){var i=gxPi++%GXP.length;flyPhrase(GXP[i],av.position);netAct('gxs'+i);pluck(880);}
+function gxRemote(r,a){if(a=='gx1')r.ls=true;else if(a=='gx0')r.ls=false;else if(/^gxs\d$/.test(a)&&r.zn===0&&zone===0){flyPhrase(GXP[+a.slice(3)]||GXP[0],r.g.position);voxPlay(false);}}
+function gxShout(){var i=gxPi++%GXP.length;flyPhrase(GXP[i],av.position);netAct('gxs'+i);pluck(880);voxPlay(true);}
 function setGalaxy(on){if(on&&zone!==0)return;if(on===gxOn)return;gxOn=on;document.getElementById('bGx').classList.toggle('on',on);document.getElementById('gxp').classList.toggle('hide',!on);
-if(on){if(dance)toggleDance(false);if(!ac)initA();ac.resume();emoEl.classList.add('hide');gxFw=0;burst(av.position.x,av.position.y+2.4,av.position.z,0xb6ff4a);pluck(660);gxHint('🌌 떼창 시작! 💚 외치기로 응원 문구를 하늘로 날려요');}
+if(on){if(dance)toggleDance(false);if(!ac)initA();ac.resume();voxLoad();emoEl.classList.add('hide');gxFw=0;burst(av.position.x,av.position.y+2.4,av.position.z,0xb6ff4a);pluck(660);gxHint('🌌 떼창 시작! 💚 외치기로 응원 문구를 하늘로 날려요');}
 arpStart();netAct(on?'gx1':'gx0');}
 document.getElementById('bGx').onclick=function(){setGalaxy(!gxOn);};
 document.getElementById('gxS').onclick=gxShout;
@@ -509,8 +520,8 @@ new THREE.TextureLoader().load('assets/lantern_red.png',function(t){
  hangL.forEach(function(h){while(h.children.length>1)h.remove(h.children[0]);var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,fog:false}));sp.center.set(.5,1);sp.scale.set(.66,2.1,1);h.userData.sp=sp;h.add(sp);});
  colL.forEach(function(l){l.visible=false;var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,fog:false}));sp.center.set(.5,1);sp.scale.set(.5,1.6,1);sp.position.set(l.position.x,l.position.y+.8,l.position.z);zoneD.add(sp);});
 },undefined,function(){});
-var chT=3;
-function chime(){if(!ac||!bgm||vid||dance||gxOn)return;var base=[1318.5,1568,1760,2093][Math.floor(Math.random()*4)];[0,.18].forEach(function(dl,k){var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+dl;o.type='sine';o.frequency.value=base*(k?1.5:1);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.07,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+2.4);o.connect(g);g.connect(sfx);o.start(t);o.stop(t+2.5);});}
+var chT=3,zcEl=document.getElementById('zc');
+function chime(){if(!ac||!bgm||vid||dance||gxOn)return;var base=[784,880,988,1175][Math.floor(Math.random()*4)];[0,.3].forEach(function(dl,k){var o=ac.createOscillator(),g=ac.createGain(),lq=ac.createBiquadFilter(),t=ac.currentTime+dl;o.type='sine';o.frequency.value=base*(k?1.5:1);lq.type='lowpass';lq.frequency.value=1500;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.035,t+.12);g.gain.exponentialRampToValueAtTime(.0001,t+3);o.connect(g);g.connect(lq);lq.connect(sfx);o.start(t);o.stop(t+3.1);});}
 function zoneDTick(dt){mLab.material.opacity=.8+Math.sin(T*3)*.2;if(!mk.off)maskG.position.y=3.1+Math.sin(T*1.5)*.08;cg.rotation.y+=dt*.01;var a=pgeo.attributes.position.array,i;for(i=0;i<pn;i++){a[i*3+1]-=dt*.5;a[i*3]+=Math.sin(T*.6+i)*dt*.3;if(a[i*3+1]<0)a[i*3+1]=14;}pgeo.attributes.position.needsUpdate=true;
  var b=pgeo2.attributes.position.array;for(i=0;i<pn2;i++){b[i*3+1]-=dt*.8;b[i*3]+=Math.sin(T*.9+pw2[i])*dt*.6;if(b[i*3+1]<0){b[i*3+1]=14;b[i*3]=(Math.random()-.5)*34;}}pgeo2.attributes.position.needsUpdate=true;
  hangL.forEach(function(h){if(h.userData.sp){h.userData.sp.material.rotation=Math.sin(T*1.1+h.userData.ph)*.09;}else{h.rotation.z=Math.sin(T*1.1+h.userData.ph)*.09;h.rotation.x=Math.cos(T*.9+h.userData.ph)*.06;}});
@@ -534,6 +545,17 @@ function guestbook(){var o=gbLeft();modal('<h3>📜 키위 방명록</h3><p>밍�
  document.getElementById('gbk').onclick=function(){var ip=document.getElementById('gbt'),t=ip.value.trim();if(!t)return;if(!okText(t)){ip.value='';ip.placeholder='이 표현은 남길 수 없어요';return;}if(!gbRef){ip.value='';ip.placeholder='혼자 둘러보기 중에는 남길 수 없어요';return;}var c=gbLeft();if(c.n>=3){ip.value='';ip.placeholder='오늘은 3번 다 남겼어요. 내일 또 만나요 🥝';return;}
   gbRef.push({n:myName.slice(0,14),t:t.slice(0,20),at:firebase.database.ServerValue.TIMESTAMP}).then(function(){c.n++;try{localStorage.setItem('kiwi_gb',JSON.stringify(c));}catch(e){}}).catch(function(){ip.placeholder='남기지 못했어요. 잠시 후 다시 시도해요';});ip.value='';ip.placeholder='남겼어요! 💚';};}
 document.getElementById('bGuest').onclick=guestbook;
+/* 🎤 공연장 목소리 */
+var voxBuf=null,voxTried=false,voxBus=null,voxLast=0;
+function voxLoad(){if(voxBuf||voxTried||!ac)return;voxTried=true;var names=['mingi_saranghae.mp3','mingi_saranghae.m4a','mingi_saranghae.wav'];(function next(i){if(i>=names.length||typeof fetch==='undefined')return;fetch(assetBase+names[i]).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(b){ac.decodeAudioData(b,function(d){voxBuf=d;},function(){next(i+1);});}).catch(function(){next(i+1);});})(0);}
+function voxInit(){if(voxBus||!ac)return;voxBus=ac.createGain();var dry=ac.createGain();dry.gain.value=.85;voxBus.connect(dry);dry.connect(ac.destination);
+ var len=Math.floor(ac.sampleRate*2.6),ir=ac.createBuffer(2,len,ac.sampleRate);for(var c=0;c<2;c++){var d=ir.getChannelData(c);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+ var cv=ac.createConvolver();cv.buffer=ir;var wet=ac.createGain();wet.gain.value=.5;voxBus.connect(cv);cv.connect(wet);wet.connect(ac.destination);
+ var dl=ac.createDelay(1);dl.delayTime.value=.27;var fb=ac.createGain();fb.gain.value=.3;var dg=ac.createGain();dg.gain.value=.3;voxBus.connect(dl);dl.connect(dg);dg.connect(ac.destination);dl.connect(fb);fb.connect(dl);}
+function voxPlay(self){if(!ac||!voxBuf||vid)return;var now=ac.currentTime;if(now-voxLast<.7)return;voxLast=now;voxInit();
+ function one(rate,when,gain,pan){var src=ac.createBufferSource();src.buffer=voxBuf;src.playbackRate.value=rate;var g=ac.createGain();g.gain.value=gain;var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3600;src.connect(lp);lp.connect(g);var out=g;if(ac.createStereoPanner){var pn=ac.createStereoPanner();pn.pan.value=pan;g.connect(pn);out=pn;}out.connect(voxBus);src.start(now+when);}
+ if(self)one(1,0,.9,0);
+ var n=self?5:3;for(var k=0;k<n;k++)one(.96+Math.random()*.08,.03+Math.random()*.1,(self?.16:.22)+Math.random()*.06,(Math.random()-.5)*1.6);}
 /* 포토부스 */
 var phOn=false,phFr=0,phBlob=null,phUrl=null,PHN=['달빛','키위','없음'];
 function setPhoto(on){phOn=on;document.body.classList.toggle('ph',on);document.getElementById('phb').classList.toggle('hide',!on);document.getElementById('phh').classList.toggle('hide',!on);if(on){setGalaxy(false);}else{emoEl.classList.add('hide');}}
@@ -559,13 +581,13 @@ fi.onchange=function(){var fs=[].slice.call(fi.files).slice(0,FR.length);fs.forE
 /* 오디오 */
 var ac,master,sfx,bgm=false,dance=false,vid=false,arp,bgLp,bgDr=[],bgG=[],zBg=-1,zMs=700,zPr=.35;
 function initA(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);sfx=ac.createGain();sfx.gain.value=.9;sfx.connect(ac.destination);var lp=bgLp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;lp.connect(master);[110,164.8,220,277.2].forEach(function(f,i){var o=ac.createOscillator();o.type=i%2?'sine':'triangle';o.frequency.value=f;o.detune.value=(i-1.5)*6;var g=ac.createGain();g.gain.value=.12;o.connect(g);g.connect(lp);o.start();bgDr.push(o);bgG.push(g);});zBg=-1;}
-function pluck(f){if(!ac||(!bgm&&!dance&&!gxOn))return;var o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(.18,ac.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+1.4);o.connect(g);g.connect(sfx);o.start();o.stop(ac.currentTime+1.5);}
+function pluck(f){if(!ac||(!bgm&&!dance&&!gxOn))return;var soft=zone!==0&&!dance&&!gxOn,o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(soft?.09:.18,t0+(soft?.09:.02));g.gain.exponentialRampToValueAtTime(.0001,t0+(soft?2.2:1.4));o.connect(g);if(soft){var lq=ac.createBiquadFilter();lq.type='lowpass';lq.frequency.value=1100;g.connect(lq);lq.connect(sfx);}else g.connect(sfx);o.start();o.stop(t0+2.3);}
 var svOff=0,dwPrev=false,arpTok=0;
 function gnow(){return Date.now()+svOff;}
 function danceWin(){return new Date(gnow()).getUTCMinutes()%30<3;}
 function danceTick(){var w=danceWin();document.getElementById('bDance').classList.toggle('pulse',w&&!dance);if(w&&!dwPrev){dwPrev=true;if(zone===0&&!gxOn&&!vid)gxHint('💃 군무 타임! 모두 같은 박자로 춰요 · 군무 버튼을 눌러요');}else if(!w)dwPrev=false;}
 var N=[440,494,554,659,740,880];
-var ZB=[{d:[110,164.8,220,277.2],n:[440,494,554,659,740,880],lp:700,ms:700},{d:[130.8,196,261.6,329.6],n:[523,587,659,784,880,1047],lp:420,ms:1600,dg:0,pr:.15},{d:[98,146.8,196,233.1],n:[294,330,349,440,466,587],lp:380,ms:1800,dg:0,pr:.15}];
+var ZB=[{d:[110,164.8,220,277.2],n:[440,494,554,659,740,880],lp:700,ms:700},{d:[130.8,196,261.6,329.6],n:[330,392,440,523,587,659],lp:420,ms:1600,dg:0,pr:.15},{d:[98,146.8,196,233.1],n:[220,262,294,330,392,440],lp:380,ms:1800,dg:0,pr:.15}];
 function applyZoneBgm(n){zBg=n;var z=ZB[n]||ZB[0];for(var i=0;i<6;i++)N[i]=z.n[i];zMs=z.ms;zPr=z.pr||.35;if(ac){var t=ac.currentTime;bgDr.forEach(function(o,i){o.frequency.setTargetAtTime(z.d[i],t,1.2);});if(bgLp)bgLp.frequency.setTargetAtTime(z.lp,t,1.2);bgG.forEach(function(g){g.gain.setTargetAtTime(z.dg===undefined?.12:z.dg,t,1.2);});}arpStart();}
 function arpStart(){clearInterval(arp);var my=++arpTok;if(dance&&!gxOn){var ms=260;(function tick(){if(my!==arpTok)return;var b=Math.floor(gnow()/ms);if(!vid&&((b*2654435761)>>>0)%100<90)pluck(N[((b*40503)>>>0)%6]);arp=setTimeout(tick,ms-(gnow()%ms)+1);})();return;}arp=setInterval(function(){if((bgm||dance||gxOn)&&!vid&&Math.random()<(dance?.9:gxOn?.7:zPr))pluck(N[Math.floor(Math.random()*6)]);},dance?260:gxOn?380:zMs);}
 function setBgm(on){bgm=on;if(on){if(!ac)initA();ac.resume();}if(ac)master.gain.setTargetAtTime(on?.55:0,ac.currentTime,.5);document.getElementById('bBgm').textContent=on?'🔊':'🔇';arpStart();}
@@ -622,7 +644,7 @@ if(zone==2){for(var j=0;j<strs.length;j++)strs[j].rotation.z=Math.sin(T*.8+j)*.0
 for(var h=hearts.length-1;h>=0;h--){var q=hearts[h];q.t+=dt;if(q.t<0)continue;q.s.position.y+=dt*1.1;q.s.position.x+=Math.sin(q.t*4+h)*.01;q.s.material.opacity=Math.max(0,1-q.t/1.8);if(q.t>1.8){scene.remove(q.s);q.s.material.dispose();hearts.splice(h,1);}}
 netT+=dt;if(meRef&&netT>.2){netT=0;var sk=r2(av.position.x)+','+r2(av.position.z)+','+r2(av.rotation.y)+','+zone;if(sk!==lastKey){lastKey=sk;sendMe(false);}}
 for(var id in remotes){var r=remotes[id],dx2=r.tx-r.g.position.x,dz2=r.tz-r.g.position.z,dd2=Math.hypot(dx2,dz2);r.g.position.x+=dx2*Math.min(1,dt*8);r.g.position.z+=dz2*Math.min(1,dt*8);var gy2=r.zn?.4:(r.tz<-10?.72:.1);r.w=dd2>.05?r.w+dt*7:0;var df2=((r.ry-r.g.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;r.g.rotation.y+=df2*Math.min(1,dt*10);var jp2=0;if(r.jump>0){r.jump-=dt;jp2=Math.sin((1-Math.max(r.jump,0)/.7)*Math.PI)*.8;}r.g.position.y=gy2+(dd2>.05?Math.abs(Math.sin(r.w))*.08:0)+jp2;var sw=dd2>.05?Math.sin(r.w)*.7:0;r.legL.rotation.x=sw;r.legR.rotation.x=-sw;r.armL.rotation.x=sw*.8;r.armR.rotation.x=-sw*.8;var aL=-.65,aR=.65;if(r.jump>0){aL=-2.6;aR=2.6;}if(r.act=='wave'){r.actT+=dt;aR=2.3+Math.sin(r.actT*14)*.35;if(r.actT>2)r.act=null;}else if(r.act=='heart'){r.actT+=dt;aL=-2.4;aR=2.4;if(r.actT>1.4)r.act=null;}r.armL.rotation.z=aL;r.armR.rotation.z=aR;r.g.visible=(r.zn===zone);}
-if(zBg!==zone)applyZoneBgm(zone);if(zone===1)zoneDTick(dt);if(zone===2)knotTick(dt);danceTick();steleFade();gxUpdate(dt);tickBub(av,dt);for(var id3 in remotes)tickBub(remotes[id3].g,dt);moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
+if(zBg!==zone)applyZoneBgm(zone);zcEl.style.display=zone===1?'block':'none';if(zone===1)zoneDTick(dt);if(zone===2)knotTick(dt);danceTick();steleFade();gxUpdate(dt);tickBub(av,dt);for(var id3 in remotes)tickBub(remotes[id3].g,dt);moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
 addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 var intro=document.getElementById('intro'),pbar=document.getElementById('pbar'),ptxt=document.getElementById('ptxt'),goBtn=document.getElementById('go'),sndB=document.getElementById('snd'),snd=false,ready=false,t0=Date.now();
 function doneLoad(){if(ready)return;ready=true;setTimeout(function(){pbar.style.width='100%';ptxt.textContent='준비 완료';goBtn.disabled=false;goBtn.textContent='입장하기';},Math.max(0,900-(Date.now()-t0)));}
