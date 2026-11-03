@@ -31,9 +31,15 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .hud{z-index:2;position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;justify-content:space-between;align-items:center;pointer-events:none}
 .hud .pill{height:46px;padding:0 16px;gap:10px;font-size:14px;font-weight:600;pointer-events:auto}
 .hud .pill span{white-space:nowrap}#tt{overflow:hidden;text-overflow:ellipsis;max-width:46vw}.zc{z-index:10;position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 66px);max-width:60vw;font-size:11px;line-height:1.4;color:rgba(255,255,255,.85);text-shadow:0 1px 6px #000;pointer-events:none;display:none}body.ph .zc{display:none!important}.ib{z-index:2;position:fixed;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:var(--sub);font-size:17px;padding:0}body.ph .ib{display:none}.hud button{background:none;border:0;color:inherit;font-size:19px;padding:6px 4px}
-.bar{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:8px 10px}
-.bar button,.emo button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 9px;border-radius:18px;min-width:46px}
-.bar button.pulse{animation:pl 1s infinite}@keyframes pl{50%{background:rgba(164,207,63,.45)}}.bar button i,.emo button i{font-style:normal;font-size:22px}.bar button.on{background:rgba(164,207,63,.22)}
+.bar{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:6px 8px;display:flex;gap:4px;max-width:calc(100vw - 16px);box-sizing:border-box}
+.bar button,.emo button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:600;padding:4px 6px;border-radius:16px;min-width:48px;flex-shrink:0;white-space:nowrap}
+.bar button.pulse{animation:pl 1s infinite}@keyframes pl{50%{background:rgba(164,207,63,.45)}}.bar button i,.emo button i{font-style:normal;font-size:20px;line-height:1.1}.bar button.on{background:rgba(164,207,63,.22)}
+.hi5-pop{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 78px);z-index:10;padding:8px 14px;gap:10px;background:rgba(14,22,58,.94);border:1.5px solid var(--gold);display:flex;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.6);animation:pl .8s infinite}.hi5-pop.hide{display:none}.hi5-pop button{background:linear-gradient(135deg,#a4cf3f,#ffd88a);color:#1b2a08;font-weight:800;font-size:12.5px;border:0;border-radius:14px;padding:6px 12px;cursor:pointer}
+.tour-c{color:var(--tx);font-size:15px;line-height:1.55;font-weight:600;max-width:320px;margin:0 auto 12px;word-break:keep-all}
+.tour-b{margin:6px 0 12px}
+.tour-lbl{font-size:12px;color:var(--gold);letter-spacing:.06em}
+.tour-t{font-size:42px;font-weight:900;letter-spacing:.04em;color:#fff;text-shadow:0 0 26px rgba(255,216,138,.55),0 2px 8px #000;line-height:1.1;margin:4px 0}
+.tour-cnt{font-size:12px;color:var(--sub)}
 .emo{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 98px);padding:6px 8px}.emo.hide{display:none}.gxp{bottom:calc(env(safe-area-inset-bottom,0px) + 170px);align-items:center;gap:4px}#gxn{padding:0 8px 0 6px;font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap}
 .hint{z-index:2;position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 108px);text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 8px #000;pointer-events:none;transition:opacity 1s}
 .modal{z-index:4;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,400px);max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,.6);box-sizing:border-box}
@@ -43,13 +49,23 @@ canvas{display:block;position:fixed;inset:0;z-index:0;width:100%;height:100%}
 .modal .x{position:absolute;right:12px;top:8px;background:none;border:0;color:var(--sub);font-size:22px}
 .phb{z-index:2;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);padding:8px 14px;gap:14px}.phb.hide{display:none}.phb button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:4px 8px;min-width:48px}.phb button i{font-style:normal;font-size:22px}.phb #phK{width:64px;height:64px;border-radius:50%;background:#fff;color:#1a0b1c;justify-content:center;font-size:26px;box-shadow:0 0 0 4px rgba(255,255,255,.35)}.phh{z-index:2;position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 8px #000;pointer-events:none}.phh.hide{display:none}body.ph .hud,body.ph .bar,body.ph .hint,body.ph .gxp{display:none!important}
 </style></head><body>
-<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bGuest">📜</button><button id="bShot">📸</button><button id="bPhoto">🖼</button></div></div>
+<div class="hud"><div class="pill"><span id="tt">🌙 달빛 비경</span><span id="rm" style="font-weight:400;color:var(--sub);font-size:12px"></span></div><div class="pill"><span id="lc">🪷 0</span><button id="bName">✏️</button><button id="bBgm">🔇</button><button id="bPhoto">🖼</button></div></div>
 <div class="hint" id="hint">눌러 이동 · 쓸어 둘러보기 · 두 손가락 확대/축소</div>
-<div class="bar pill"><button id="bWish"><i>🪷</i>소원등</button><button id="bBday"><i>🎂</i>0803</button><button id="bDance"><i>💃</i>군무</button><button id="bGx"><i>🌌</i>떼창</button><button id="bAct"><i>🙌</i>동작</button></div>
+<div class="bar pill">
+<button id="bStick"><i>🪄</i>응원봉</button>
+<button id="bHi5"><i>✋</i>하이파이브</button>
+<button id="bSelfie"><i>📸</i>셀카</button>
+<button id="bWish"><i>🪷</i>소원등</button>
+<button id="bLove"><i>💚</i>사랑해</button>
+<button id="bMask" style="display:none"><i>🎭</i>가면</button>
+<button id="bKnot" style="display:none"><i>🧧</i>매듭</button>
+<button id="bGuest" style="display:none"><i>📜</i>방명록</button>
+</div>
+<div class="pill hi5-pop hide" id="hi5Pop"><span id="hi5Txt">✋ 2초 안에 누르세요!</span><button id="hi5Btn">짝! ✋</button></div>
 <button class="ib" id="ib">ⓘ</button><div class="zc" id="zc">🎨 치비 이미지 출처: 생원(生源) 후명호 SD 캐릭터 아크릴 스탠드</div><div class="phh hide" id="phh">구도를 잡고 📸를 눌러요 · 눌러서 이동할 수 있어요</div><div class="pill phb hide" id="phb"><button id="phF"><i>🖼</i><span id="phFn">달빛</span></button><button id="phK">📸</button><button id="phP"><i>🙌</i>포즈</button><button id="phX"><i>✖</i>닫기</button></div>
 <div class="pill emo gxp hide" id="gxp"><span id="gxn">🌌 떼창</span><button id="gxS"><i>💚</i>외치기</button><button id="gxL"><i>🎵</i>라이브</button><button id="gxX"><i>✖</i>끝내기</button></div>
 <div class="pill emo hide" id="emo"><button data-e="cheer"><i>🥝</i>응원</button><button data-e="wave"><i>👋</i>인사</button><button data-e="heart"><i>💗</i>하트</button><button data-e="love"><i>💚</i>사랑해</button></div>
-<div id="intro"><div class="moonI"></div><h1>🥝 후밍하오 · 키위 3D 팬 라운지</h1><div class="sub">달빛 비경에 오신 걸 환영해요</div><div class="prog"><div id="pbar"></div></div><div id="ptxt">사진을 불러오는 중…</div><button id="go" disabled>잠시만요…</button><button id="snd">🔇 소리 끄고 입장</button><div class="guide"><b>이렇게 놀아요</b>👆 바닥을 눌러서 걸어 다녀요<br>👋 화면을 쓸어서 둘러봐요<br>🤏 두 손가락으로 확대·축소<br>🖼 액자를 누르면 사진과 영상이 열려요<br>🪷 소원 연꽃등을 띄워 보세요<br>🙌 동작 버튼으로 인사와 하트를 보내요<br>🌌 떼창 버튼으로 은하수 응원봉 모드를 켜요<br>🌀 시공간의 문으로 다른 공간에 가요</div><div class="cred">팬이 만든 비공식·비영리 팬 공간이에요<br>난징 페스티벌 Galaxy 영상 원작자: 밍트리<br>입청운 치비 이미지 출처: 생원(生源) 후명호 SD 캐릭터 아크릴 스탠드<br>영상 원저자와 출처를 존중해 주세요</div></div>
+<div id="intro"><div class="moonI"></div><div class="tour-c">깃발을 따라 달빛 비경을 도는 키위 팬 투어, 지금 함께 가요.</div><div class="tour-b"><div class="tour-lbl">다음 투어 출발</div><div class="tour-t" id="tourTime">--:--</div><div class="tour-cnt" id="tourCount">현재 산책 중인 키위 · 1명</div></div><div class="prog"><div id="pbar"></div></div><div id="ptxt">사진과 음악을 준비하는 중…</div><button id="go" disabled>준비 중…</button><button id="snd">🔇 소리 끄고 입장</button><div class="cred">비공식 팬 제작 · 배우/소속사와 관계없음<br>난징 페스티벌 Galaxy 영상 원작자: 밍트리 · 입청운 치비 이미지 출처: 생원(生源) 후명호 SD 캐릭터 아크릴 스탠드</div></div>
 <div id="fade"></div><div class="modal hide" id="modal"><button class="x" id="mx">×</button><div id="mb"></div></div>
 <input type="file" id="file" accept="image/*" multiple hidden>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -246,7 +262,7 @@ var pn=160,pp=new Float32Array(pn*3);for(var i=0;i<pn;i++){pp[i*3]=(Math.random(
 var pgeo=new THREE.BufferGeometry();pgeo.setAttribute('position',new THREE.BufferAttribute(pp,3));var petals=new THREE.Points(pgeo,new THREE.PointsMaterial({color:0xfff0d0,size:.5,map:gW,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));zoneD.add(petals);
 var wl=new THREE.PointLight(0xffc98a,1.1,40);wl.position.set(0,7,2);zoneD.add(wl);
 var fade=document.getElementById('fade'),tt=document.getElementById('tt');
-window.goZone=goZone;function goZone(n){closeM();setGalaxy(false);fade.style.opacity=1;setTimeout(function(){zone=n;scene.children.forEach(function(c){if(c!==zoneD&&c!==zoneE&&c!==zoneC&&c!==av&&c!==remG&&!c.isLight)c.visible=(n==0);});zoneD.visible=(n==1);zoneE.visible=(n==2);zoneC.visible=(n==3);disco.visible=(n==0);scene.background.set(n==3?0x08122b:n==2?0x1c0a18:n?0x2c3f7a:0x070b1f);scene.fog.color.set(n==3?0x0f2147:n==2?0x2a1020:n?0x4d5f9a:0x0a1233);scene.fog.density=n==3?.024:n==2?.02:n?.013:.016;av.position.set(0,n?.4:.1,n==2?6:n?5:9);av.rotation.y=Math.PI;dest=null;av.userData.b=av.position.y;tgt.set(av.position.x,av.position.y+1.6,av.position.z);yaw=0;pitch=.3;dist=9;tt.innerHTML=n==3?'🎋 대몽귀리 · 달빛 대나무 숲':n==2?'🦊 호요소홍랑 · 명예의 전당':n?'☁️ 입청운 · 구름 바다 누각':'🌙 달빛 비경';['bWish','bBday','bDance'].forEach(function(id){document.getElementById(id).style.display=n?'none':'';});fade.style.opacity=0;},450);}
+window.goZone=goZone;function goZone(n){closeM();setGalaxy(false);fade.style.opacity=1;setTimeout(function(){zone=n;scene.children.forEach(function(c){if(c!==zoneD&&c!==zoneE&&c!==zoneC&&c!==av&&c!==remG&&!c.isLight)c.visible=(n==0);});zoneD.visible=(n==1);zoneE.visible=(n==2);zoneC.visible=(n==3);disco.visible=(n==0);scene.background.set(n==3?0x08122b:n==2?0x1c0a18:n?0x2c3f7a:0x070b1f);scene.fog.color.set(n==3?0x0f2147:n==2?0x2a1020:n?0x4d5f9a:0x0a1233);scene.fog.density=n==3?.024:n==2?.02:n?.013:.016;av.position.set(0,n?.4:.1,n==2?6:n?5:9);av.rotation.y=Math.PI;dest=null;av.userData.b=av.position.y;tgt.set(av.position.x,av.position.y+1.6,av.position.z);yaw=0;pitch=.3;dist=9;tt.innerHTML=n==3?'🎋 대몽귀리 · 달빛 대나무 숲':n==2?'🦊 호요소홍랑 · 명예의 전당':n?'☁️ 입청운 · 구름 바다 누각':'🌙 달빛 비경';updateBar(n);fade.style.opacity=0;},450);}
 function maskOff(){if(mk.off)return;mk.off=true;mk.t=0;burst(0,4,-1,0xffd88a);vidOn();var U1='https://youtube.com/shorts/L2kEQ7AZfx8',U2='https://youtube.com/shorts/0vUnxt6o3YQ';modal('<h3>🎭 기백재 가면 벗기</h3><div id="ytb">'+ytHTML(ytInfo(U1),'mask')+'</div><button class="btn" id="y1">가면 벗기</button><button class="btn" id="y2">배신 오열</button>');document.getElementById('y1').onclick=function(){document.getElementById('ytb').innerHTML=ytHTML(ytInfo(U1),'mask');};document.getElementById('y2').onclick=function(){document.getElementById('ytb').innerHTML=ytHTML(ytInfo(U2),'mask');};}
 pickD.push(maskM);
 /* 호요소홍랑 명예의 전당 */
@@ -298,10 +314,10 @@ var CFG={apiKey:"AIzaSyD3Gio4e0ugk3UFFs1zRrZoY7OdtpNTSnc",authDomain:"hou-mingha
 var db,meRef,lref,sharedL={},uid,room,remotes={},remG=new THREE.Group(),netT=0,lastKey='';scene.add(remG);
 function r2(v){return Math.round(v*100)/100;}
 function nameTag(t){var c=document.createElement('canvas');c.width=480;c.height=72;var g=c.getContext('2d');g.font='bold 30px sans-serif';var tw=Math.ceil(g.measureText(t).width),W=Math.min(472,tw+48),x0=(480-W)/2;g.fillStyle='rgba(30,36,30,.78)';g.beginPath();if(g.roundRect)g.roundRect(x0,6,W,60,30);else g.rect(x0,6,W,60);g.fill();g.fillStyle='#f4f0e4';g.textAlign='center';g.fillText(t,240,46,W-40);var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false,depthWrite:false,fog:false}));sp.scale.set(3.06,.46,1);sp.position.y=2.35;sp.renderOrder=9;return sp;}
-function cnt(){document.getElementById('rm').textContent=' · 방 '+(+room.slice(1)+1)+' · '+(Object.keys(remotes).length+1)+'명';}
+function cnt(){var n=Object.keys(remotes).length+1;document.getElementById('rm').textContent=' · 방 '+(+room.slice(1)+1)+' · '+n+'명';var tc=document.getElementById('tourCount');if(tc)tc.textContent='현재 산책 중인 키위 · '+n+'명';}
 function addR(id,v){if(remotes[id]){remG.remove(remotes[id].g);delete remotes[id];}var k=makeKiwi(),r={g:k.g,legL:k.legL,legR:k.legR,armL:k.armL,armR:k.armR,sticks:k.sticks,ls:false,tx:v.x,tz:v.z,ry:v.ry||0,zn:v.zn||0,at:0,act:null,actT:0,w:0,name:'',jump:0,tag:null};r.g.position.set(v.x,0,v.z);r.g.rotation.y=r.ry;remG.add(r.g);remotes[id]=r;updR(id,v,true);cnt();}
 function updR(id,v,init){var r=remotes[id];if(!r||!v)return;r.tx=v.x;r.tz=v.z;r.ry=v.ry||0;r.zn=v.zn||0;if(v.n&&v.n!==r.name){r.name=v.n;if(r.tag)r.g.remove(r.tag);r.tag=nameTag(v.n);r.g.add(r.tag);}
-if(init){r.at=v.at||0;if(v.a=='gx1')r.ls=true;if(v.a=='dn1')r.dn=true;}else if(v.at&&v.at!==r.at){r.at=v.at;if(/^dn/.test(v.a||'')){r.dn=(v.a=='dn1');}else if(/^gx/.test(v.a||'')){gxRemote(r,v.a);}else{r.act=(v.a=='love')?'heart':v.a;r.actT=0;if(v.a=='heart'||v.a=='love')hrt(r.g.position);if(v.a=='love')bubble(r.g,'밍이 사랑해 💚');if(v.a=='cheer')r.jump=.7;}}}
+if(init){r.at=v.at||0;if(v.a=='gx1')r.ls=true;if(v.a=='dn1')r.dn=true;}else if(v.at&&v.at!==r.at){r.at=v.at;if(v.a==='hf_req'&&r.zn===zone){var dMe=Math.hypot(r.g.position.x-av.position.x,r.g.position.z-av.position.z);if(dMe<9){hfPartner=id;var pop=document.getElementById('hi5Pop'),txt=document.getElementById('hi5Txt');if(txt)txt.innerHTML='✋ <b>'+esc(r.name||'키위')+'</b>님의 하이파이브!';if(pop)pop.classList.remove('hide');clearTimeout(hfPopTimer);hfPopTimer=setTimeout(function(){if(pop)pop.classList.add('hide');hfPartner=null;},2000);}}else if(v.a==='hf_ack'&&r.zn===zone){triggerClap(id);}else if(/^dn/.test(v.a||'')){r.dn=(v.a=='dn1');}else if(/^gx/.test(v.a||'')){gxRemote(r,v.a);}else{r.act=(v.a=='love')?'heart':v.a;r.actT=0;if(v.a=='heart'||v.a=='love')hrt(r.g.position);if(v.a=='love')bubble(r.g,'밍이 사랑해 💚');if(v.a=='cheer')r.jump=.7;}}}
 function delR(id){var r=remotes[id];if(!r)return;remG.remove(r.g);delete remotes[id];cnt();}
 function sendMe(full){if(!meRef)return;var o={x:r2(av.position.x),z:r2(av.position.z),ry:r2(av.rotation.y),zn:zone,t:Date.now()};if(full)o.n=myName;meRef.update(o);}
 function netAct(e){if(meRef)meRef.update({a:e,at:Date.now()});}
@@ -344,10 +360,15 @@ function flyPhrase(text,pos){var c=document.createElement('canvas');c.width=480;
 var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,depthTest:false,fog:false,opacity:0}));sp.renderOrder=12;sp.scale.set(3.6,.72,1);sp.position.set(pos.x+(Math.random()-.5)*1.4,pos.y+2.8,pos.z);scene.add(sp);gxFly.push({s:sp,t:0,v:new THREE.Vector3((Math.random()-.5)*1.6,2.3,-2.4)});}
 function gxRemote(r,a){if(a=='gx1')r.ls=true;else if(a=='gx0')r.ls=false;else if(/^gxs\d$/.test(a)&&r.zn===0&&zone===0){flyPhrase(GXP[+a.slice(3)]||GXP[0],r.g.position);voxPlay(false);}}
 function gxShout(){var i=gxPi++%GXP.length;flyPhrase(GXP[i],av.position);netAct('gxs'+i);pluck(880);voxPlay(true);}
-function setGalaxy(on){if(on&&zone!==0)return;if(on===gxOn)return;gxOn=on;document.getElementById('bGx').classList.toggle('on',on);document.getElementById('gxp').classList.toggle('hide',!on);
-if(on){if(dance)toggleDance(false);if(!ac)initA();ac.resume();voxLoad();emoEl.classList.add('hide');gxFw=0;burst(av.position.x,av.position.y+2.4,av.position.z,0xb6ff4a);pluck(660);gxHint('🌌 떼창 시작! 💚 외치기로 응원 문구를 하늘로 날려요');}
+function setGalaxy(on){if(on===gxOn)return;gxOn=on;var b=document.getElementById('bStick');if(b)b.classList.toggle('on',on);document.getElementById('gxp').classList.toggle('hide',!on||zone!==0);
+if(on){if(dance)toggleDance(false);if(!ac)initA();ac.resume();voxLoad();emoEl.classList.add('hide');gxFw=0;burst(av.position.x,av.position.y+2.4,av.position.z,0xb6ff4a);pluck(660);if(zone===0)gxHint('🌌 떼창 시작! 💚 사랑해로 응원 문구를 하늘로 날려요');else gxHint('🪄 응원봉을 흔들어요!');}
 arpStart();netAct(on?'gx1':'gx0');}
-document.getElementById('bGx').onclick=function(){setGalaxy(!gxOn);};
+document.getElementById('bStick').onclick=function(){setGalaxy(!gxOn);};
+document.getElementById('bSelfie').onclick=function(){setPhoto(true);};
+document.getElementById('bLove').onclick=function(){if(gxOn&&zone===0)gxShout();else doAct('love');};
+document.getElementById('bMask').onclick=maskOff;
+document.getElementById('bKnot').onclick=knotTap;
+document.getElementById('bGuest').onclick=guestbook;
 document.getElementById('gxS').onclick=gxShout;
 document.getElementById('gxX').onclick=function(){setGalaxy(false);};
 document.getElementById('gxL').onclick=function(){openFrame(FR[0]);};
@@ -381,7 +402,9 @@ cv.addEventListener('pointercancel',up);
 cv.addEventListener('pointerup',function(e){var wasTap=moved<8&&Object.keys(ptr).length==1;up(e);if(wasTap)tap(e.clientX,e.clientY);});
 cv.addEventListener('wheel',function(e){dist=Math.max(4,Math.min(24,dist+e.deltaY*.02));},{passive:true});
 var ray=new THREE.Raycaster(),v2=new THREE.Vector2();
-function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);var h=ray.intersectObjects(zone==3?pickC:zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.umb)return umbTap();if(u.guest)return steleG.visible?guestbook():moveTo();if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('대몽귀리')>=0)return goZone(3);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
+function tap(x,y){v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(v2,camera);
+for(var rId in remotes){var rObj=remotes[rId];if(rObj.zn===zone){var rHits=ray.intersectObjects(rObj.g.children,true);if(rHits&&rHits.length>0){requestHighFive(rId);return;}}}
+var h=ray.intersectObjects(zone==3?pickC:zone==2?pickE:zone?pickD:pick)[0];if(!h)return moveTo();var u=h.object.userData;if(u.umb)return umbTap();if(u.guest)return steleG.visible?guestbook():moveTo();if(u.mask)return maskOff();if(u.knot)return knotTap();if(u.f)return openFrame(u.f);if(u.p==='back')return goZone(0);if(u.p&&u.p.indexOf('대몽귀리')>=0)return goZone(3);if(u.p&&u.p.indexOf('입청운')>=0)return goZone(1);if(u.p&&u.p.indexOf('호요소')>=0)return goZone(2);if(u.p)modal('<h3>🌀 시공간의 문</h3><p>'+u.p+'으로 이어지는 문이에요. 곧 열릴 예정이에요.</p>');}
 /* 모달 */
 var md=document.getElementById('modal'),mb=document.getElementById('mb');
 function modal(h){mb.innerHTML=h;md.classList.remove('low');md.classList.remove('hide');}
@@ -717,12 +740,59 @@ netT+=dt;if(meRef&&netT>.2){netT=0;var sk=r2(av.position.x)+','+r2(av.position.z
 for(var id in remotes){var r=remotes[id],dx2=r.tx-r.g.position.x,dz2=r.tz-r.g.position.z,dd2=Math.hypot(dx2,dz2);r.g.position.x+=dx2*Math.min(1,dt*8);r.g.position.z+=dz2*Math.min(1,dt*8);var gy2=r.zn?.4:(r.tz<-10?.72:.1);r.w=dd2>.05?r.w+dt*7:0;var df2=((r.ry-r.g.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;r.g.rotation.y+=df2*Math.min(1,dt*10);var jp2=0;if(r.jump>0){r.jump-=dt;jp2=Math.sin((1-Math.max(r.jump,0)/.7)*Math.PI)*.8;}r.g.position.y=gy2+(dd2>.05?Math.abs(Math.sin(r.w))*.08:0)+jp2;var sw=dd2>.05?Math.sin(r.w)*.7:0;r.legL.rotation.x=sw;r.legR.rotation.x=-sw;r.armL.rotation.x=sw*.8;r.armR.rotation.x=-sw*.8;var aL=-.65,aR=.65;if(r.jump>0){aL=-2.6;aR=2.6;}if(r.act=='wave'){r.actT+=dt;aR=2.3+Math.sin(r.actT*14)*.35;if(r.actT>2)r.act=null;}else if(r.act=='heart'){r.actT+=dt;aL=-2.4;aR=2.4;if(r.actT>1.4)r.act=null;}r.armL.rotation.z=aL;r.armR.rotation.z=aR;r.g.visible=(r.zn===zone);}
 if(zBg!==zone)applyZoneBgm(zone);zcEl.style.display=zone===1?'block':'none';if(zone===1)zoneDTick(dt);if(zone===2)knotTick(dt);if(zone===3&&window.__zoneCTick)window.__zoneCTick(dt);danceTick();steleFade();gxUpdate(dt);tickBub(av,dt);for(var id3 in remotes)tickBub(remotes[id3].g,dt);moon.rotation.y=T*.02;cam();renderer.render(scene,camera);}
 addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+var updateBar=function(n){
+var w=document.getElementById('bWish');if(w)w.style.display=(n===0)?'':'none';
+var l=document.getElementById('bLove');if(l)l.style.display=(n===0)?'':'none';
+var m=document.getElementById('bMask');if(m)m.style.display=(n===1)?'':'none';
+var k=document.getElementById('bKnot');if(k)k.style.display=(n===2)?'':'none';
+var g=document.getElementById('bGuest');if(g)g.style.display=(n===3)?'':'none';
+};
+updateBar(0);
+
+function updateTourTime(){var t=gnow(),d=new Date(t),m=d.getMinutes();if(m<30){d.setMinutes(30,0,0);}else{d.setHours(d.getHours()+1);d.setMinutes(0,0,0);}var hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);var el=document.getElementById('tourTime');if(el)el.textContent=hh+':'+mm;}
+setInterval(updateTourTime,1000);updateTourTime();
+
+var hfWaitTimer=null,hfPopTimer=null,hfPartner=null;
+function triggerClap(partnerId){
+clearTimeout(hfWaitTimer);clearTimeout(hfPopTimer);
+var pop=document.getElementById('hi5Pop');if(pop)pop.classList.add('hide');
+emote=0.8;var r=remotes[partnerId];if(r)r.jump=0.8;
+armR.rotation.z=2.4;if(r)r.armR.rotation.z=2.4;
+var px=av.position.x,py=av.position.y+1.8,pz=av.position.z;
+if(r){px=(px+r.g.position.x)/2;py=(py+r.g.position.y+1.8)/2;pz=(pz+r.g.position.z)/2;}
+burst(px,py,pz,0xffd88a,{n:28,size:.55,sp0:.4,sp1:1.2,life:1.3});
+burst(px,py,pz,0xa4cf3f,{n:16,size:.45,sp0:.3,sp1:1.0,life:1.1});
+bubble(av,'짝! ✋✨');if(r)bubble(r.g,'짝! ✋✨');
+if(ac){pluck(1046);setTimeout(function(){pluck(1318);},90);}
+gxHint('짝! 하이파이브 성공! ✋✨');
+hfPartner=null;
+}
+function requestHighFive(targetId){
+if(!targetId||!remotes[targetId]){gxHint('주변에 키위가 없어요 🥝');return;}
+var r=remotes[targetId];hfPartner=targetId;
+var d=Math.hypot(r.g.position.x-av.position.x,r.g.position.z-av.position.z);
+if(d>2.2){dest=new THREE.Vector3((av.position.x+r.g.position.x)/2,av.position.y,(av.position.z+r.g.position.z)/2);}
+netAct('hf_req');
+gxHint('✋ '+(r.name||'키위')+'님에게 하이파이브 요청 중…');
+clearTimeout(hfWaitTimer);
+hfWaitTimer=setTimeout(function(){if(hfPartner){gxHint('상대가 못 봤나 봐요 🥝');hfPartner=null;}},2400);
+}
+function onHi5BtnClick(){
+var nearest=null,minDist=999;
+for(var id in remotes){var r=remotes[id];if(r.zn===zone){var d=Math.hypot(r.g.position.x-av.position.x,r.g.position.z-av.position.z);if(d<minDist){minDist=d;nearest=id;}}}
+if(!nearest||minDist>9){gxHint('주변에 키위가 없어요 🥝');return;}
+requestHighFive(nearest);
+}
+document.getElementById('bHi5').onclick=onHi5BtnClick;
+document.getElementById('hi5Btn').onclick=function(){if(!hfPartner)return;netAct('hf_ack');triggerClap(hfPartner);};
+
 var intro=document.getElementById('intro'),pbar=document.getElementById('pbar'),ptxt=document.getElementById('ptxt'),goBtn=document.getElementById('go'),sndB=document.getElementById('snd'),snd=false,ready=false,t0=Date.now();
-function doneLoad(){if(ready)return;ready=true;setTimeout(function(){pbar.style.width='100%';ptxt.textContent='준비 완료';goBtn.disabled=false;goBtn.textContent='입장하기';},Math.max(0,900-(Date.now()-t0)));}
+function enterLounge(){try{localStorage.setItem('kiwi_visited','1');}catch(e){}if(snd)setBgm(true);intro.classList.add('out');setTimeout(function(){intro.style.display='none';},750);hint.style.opacity=1;setTimeout(function(){hint.style.opacity=0;},7000);}
+goBtn.onclick=enterLounge;
+function doneLoad(){if(ready)return;ready=true;var dur=((Date.now()-t0)/1000).toFixed(1);window.__loadDuration=dur;setTimeout(function(){pbar.style.width='100%';ptxt.textContent='준비 완료 ('+dur+'초)';goBtn.disabled=false;goBtn.textContent='합류하기';var visited=false;try{visited=!!localStorage.getItem('kiwi_visited');}catch(e){}if(visited){setTimeout(enterLounge,400);}},Math.max(0,800-(Date.now()-t0)));}
 THREE.DefaultLoadingManager.onProgress=function(u,l,t){pbar.style.width=Math.round((t?l/t:1)*100)+'%';ptxt.textContent='사진을 불러오는 중… '+l+'/'+t;};
 THREE.DefaultLoadingManager.onLoad=doneLoad;setTimeout(doneLoad,5000);
 sndB.onclick=function(){snd=!snd;sndB.classList.toggle('on',snd);sndB.textContent=snd?'🔊 소리 켜고 입장':'🔇 소리 끄고 입장';};
-goBtn.onclick=function(){if(snd)setBgm(true);intro.classList.add('out');setTimeout(function(){intro.style.display='none';},750);hint.style.opacity=1;setTimeout(function(){hint.style.opacity=0;},7000);};
 loop();
 })();
 </script></body></html>
