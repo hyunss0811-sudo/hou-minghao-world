@@ -211,7 +211,7 @@ var hint=document.getElementById('hint');hint.style.opacity=0;
 var emoEl=document.getElementById('emo'),act=null,actT=0,hearts=[],hc=document.createElement('canvas');hc.width=hc.height=128;var hx=hc.getContext('2d');hx.font='92px sans-serif';hx.textAlign='center';hx.textBaseline='middle';hx.fillText('💗',64,68);var hTex=new THREE.CanvasTexture(hc);
 function hrt(P){P=P||av.position;for(var k=0;k<7;k++){var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:hTex,transparent:true,depthWrite:false,fog:false,opacity:0}));sp.scale.set(.6,.6,1);sp.position.set(P.x+(Math.random()-.5)*.9,P.y+2.3,P.z+(Math.random()-.5)*.5);scene.add(sp);hearts.push({s:sp,t:-k*.15});}}
 function doAct(e){netAct(e);if(e=='cheer'){emote=.7;burst(av.position.x,av.position.y+2,av.position.z,0xa4cf3f);pluck(660);return;}dest=null;av.rotation.y=Math.atan2(camera.position.x-av.position.x,camera.position.z-av.position.z);act=(e=='love')?'heart':e;actT=0;if(e=='heart'||e=='love')hrt();if(e=='love')bubble(av,'밍이 사랑해 💚');pluck(e=='wave'?587:880);}
-document.getElementById('bAct').onclick=function(){emoEl.classList.toggle('hide');};
+var bActEl=document.getElementById('bAct');if(bActEl)bActEl.onclick=function(){emoEl.classList.toggle('hide');};
 [].forEach.call(emoEl.querySelectorAll('button'),function(b){b.onclick=function(){emoEl.classList.add('hide');doAct(b.dataset.e);};});
 /* 입청운 구름 누각 */
 var zoneD=new THREE.Group();zoneD.visible=false;scene.add(zoneD);var cg=new THREE.Group();zoneD.add(cg);var pickD=[],zone=0;
@@ -526,7 +526,7 @@ function wish(){
     bubble(av, '소원이 하늘로 올라가요 ✨');
   };
 }
-document.getElementById('bWish').onclick=wish;document.getElementById('bBday').onclick=bday;
+var bWishEl=document.getElementById('bWish');if(bWishEl)bWishEl.onclick=wish;var bBdayEl=document.getElementById('bBday');if(bBdayEl)bBdayEl.onclick=bday;
 /* 사진 교체 */
 
 
@@ -665,7 +665,7 @@ function shoot(){var bt=document.getElementById('phb');renderer.render(scene,cam
  document.getElementById('phS').onclick=function(){var a=document.createElement('a');a.href=phUrl;a.download='kiwi-lounge-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);};
  document.getElementById('phH').onclick=function(){try{var f=new File([phBlob],'kiwi-lounge.jpg',{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'후밍하오 3D 팬 라운지',text:'🥝 달빛 비경에서 찍은 사진 · https://hou-minghao-world-live.deed.page/'}).catch(function(){});}else{alert('이 브라우저는 바로 공유가 안 돼요. 사진을 길게 눌러 저장한 뒤 올려주세요!');}}catch(e){alert('사진을 길게 눌러 저장한 뒤 올려주세요!');}};
  },'image/jpeg',.92);}
-document.getElementById('bShot').onclick=function(){setPhoto(true);};
+var bShotEl=document.getElementById('bShot');if(bShotEl)bShotEl.onclick=function(){setPhoto(true);};
 document.getElementById('phX').onclick=function(){setPhoto(false);};
 document.getElementById('phK').onclick=shoot;
 document.getElementById('phF').onclick=function(){phFr=(phFr+1)%3;document.getElementById('phFn').textContent=PHN[phFr];};
@@ -679,7 +679,7 @@ function pluck(f){if(!ac||(!bgm&&!dance&&!gxOn))return;var soft=zone!==0&&!dance
 var svOff=0,dwPrev=false,arpTok=0;
 function gnow(){return Date.now()+svOff;}
 function danceWin(){return new Date(gnow()).getUTCMinutes()%30<3;}
-function danceTick(){var w=danceWin();document.getElementById('bDance').classList.toggle('pulse',w&&!dance);if(w&&!dwPrev){dwPrev=true;if(zone===0&&!gxOn&&!vid)gxHint('💃 군무 타임! 모두 같은 박자로 춰요 · 군무 버튼을 눌러요');}else if(!w)dwPrev=false;}
+function danceTick(){var w=danceWin();var bDanceEl=document.getElementById('bDance');if(bDanceEl)bDanceEl.classList.toggle('pulse',w&&!dance);if(w&&!dwPrev){dwPrev=true;if(zone===0&&!gxOn&&!vid)gxHint('💃 군무 타임! 모두 같은 박자로 춰요 · 군무 버튼을 눌러요');}else if(!w)dwPrev=false;}
 var N=[440,494,554,659,740,880];
 var ZB=[{d:[110,164.8,220,277.2],n:[440,494,554,659,740,880],lp:700,ms:700},{d:[130.8,196,261.6,329.6],n:[330,392,440,523,587,659],lp:420,ms:1600,dg:0,pr:.15},{d:[98,146.8,196,233.1],n:[220,262,294,330,392,440],lp:380,ms:1800,dg:0,pr:.15},{d:[110,164.8,220,277.2],n:[262,294,330,392,440,523],lp:600,ms:1500,dg:0,pr:.2}];
 function applyZoneBgm(n){zBg=n;var z=ZB[n]||ZB[0];for(var i=0;i<6;i++)N[i]=z.n[i];zMs=z.ms;zPr=z.pr||.35;if(ac){var t=ac.currentTime;bgDr.forEach(function(o,i){o.frequency.setTargetAtTime(z.d[i],t,1.2);});if(bgLp)bgLp.frequency.setTargetAtTime(z.lp,t,1.2);bgG.forEach(function(g){g.gain.setTargetAtTime(z.dg===undefined?.12:z.dg,t,1.2);});}arpStart();}
@@ -687,7 +687,7 @@ function arpStart(){clearInterval(arp);var my=++arpTok;if(dance&&!gxOn){var ms=2
 function setBgm(on){bgm=on;if(on){if(!ac)initA();ac.resume();}if(ac)master.gain.setTargetAtTime(on?.55:0,ac.currentTime,.5);document.getElementById('bBgm').textContent=on?'🔊':'🔇';arpStart();}
 document.getElementById('bBgm').onclick=function(){setBgm(!bgm);};
 function toggleDance(force){dance=(force===true||force===false)?force:!dance;document.getElementById('bDance').classList.toggle('on',dance);if(dance){if(!ac)initA();ac.resume();}arpStart();netAct(dance?'dn1':'dn0');}
-document.getElementById('bDance').onclick=function(){toggleDance();};
+var bDanceEl2=document.getElementById('bDance');if(bDanceEl2)bDanceEl2.onclick=function(){toggleDance();};
 /* 루프 */
 var clk=new THREE.Clock(),T=0;
 function loop(){requestAnimationFrame(loop);var dt=Math.min(clk.getDelta(),.05);T+=dt;if(ready){qA+=dt;qN++;if(qN>=120){var qv=qA/qN;qA=0;qN=0;if(qv>.03&&qPR>1){qPR=Math.max(1,qPR-.25);renderer.setPixelRatio(qPR);renderer.setSize(innerWidth,innerHeight);}}}
